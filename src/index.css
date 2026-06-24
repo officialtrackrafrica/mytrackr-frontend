@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme {
+  /* This creates the 'brand-blue' color */
+  --color-brand-blue: #135ED6;
+  --color-primary-text: #050E1E;
+  --color-secondary-text: #475467;
+
+}

@@ -1,0 +1,80 @@
+// src/features/auth/components/SignUpForm.tsx
+import { useForm, Controller } from 'react-hook-form';
+import { Link } from 'react-router-dom';
+import { Google } from 'iconsax-react';
+
+import { Input } from '../../../components/ui/Input';
+import { Button } from '../../../components/ui/Button';
+import { Dropdown } from '../../../components/ui/Dropdown';
+import { AuthLayout } from '../../../components/layout/AuthLayout';
+import Logo from "../../../assets/Logo.png";
+
+import { useSignUp } from '../hooks/useSignUp';
+import { useBusinessTypes } from '../../../hooks/useBusiness';
+
+export const SignUpForm = () => {
+  const { register, handleSubmit, control, formState: { errors } } = useForm();
+  const { data: businessTypes, isLoading: loadingTypes } = useBusinessTypes();
+  const { mutate: signUp, isPending: isSigningUp } = useSignUp();
+
+  const onSubmit = (data: any) => {
+    signUp(data); // 👉 Your hook handles the success toast and navigation!
+  };
+
+  return (
+    <AuthLayout currentStep={1}>
+      <div className="flex flex-col items-center w-full">
+        
+        <div className="flex flex-col items-center text-center">
+          <img src={Logo} alt="MyTrackr Logo" className="w-24 mb-4" />
+          <h2 className="text-2xl font-bold text-slate-800">Sign up</h2>
+          <p className="text-slate-500 text-sm mb-8">Start your 30-day free trial.</p>
+        </div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <Input label="First name*" placeholder="John" error={errors.firstName?.message as string} {...register("firstName", { required: "Required" })} />
+            <Input label="Last name*" placeholder="Doe" error={errors.lastName?.message as string} {...register("lastName", { required: "Required" })} />
+          </div>
+
+          <Input label="Business name*" placeholder="Enter your business name" error={errors.businessName?.message as string} {...register("businessName", { required: "Required" })} />
+
+          {/* Dynamic Business Type Dropdown via Controller */}
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-slate-700">Business type*</label>
+            <Controller
+              name="businessType"
+              control={control}
+              rules={{ required: "Required" }}
+              render={({ field: { onChange, value } }) => (
+                <Dropdown 
+                  options={businessTypes || []} 
+                  value={value || ""} 
+                  onChange={onChange} 
+                  disabled={loadingTypes || isSigningUp} 
+                  placeholder="Select a business type..." 
+                />
+              )}
+            />
+            {errors.businessType && <p className="text-red-500 text-xs mt-1">{errors.businessType.message as string}</p>}
+          </div>
+
+          <Input label="Email*" type="email" placeholder="Enter your email" error={errors.email?.message as string} {...register("email", { required: "Required" })} />
+          <Input label="Password*" type="password" placeholder="Create a password" error={errors.password?.message as string} {...register("password", { required: "Required", minLength: { value: 8, message: "Must be at least 8 characters" } })} />
+
+          <div className="pt-2 space-y-3">
+            <Button type="submit" isLoading={isSigningUp}>Create account</Button>
+            <Button type="button" variant="outline" disabled={isSigningUp}>
+              <Google size="20" color="#4285F4" variant="Bold" />
+              Sign up with Google
+            </Button>
+          </div>
+        </form>
+
+        <p className="mt-6 text-sm text-slate-500">
+          Already have an account? <Link to="/login" className="text-brand-blue font-bold hover:underline">Log in</Link>
+        </p>
+      </div>
+    </AuthLayout>
+  );
+};
