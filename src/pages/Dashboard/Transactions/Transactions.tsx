@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
 import { Button } from '../../../components/ui/Button';
-import { SearchNormal1, Setting5, DocumentText, Add, CloseCircle, DocumentUpload } from 'iconsax-react';
+import { SearchNormal1, Setting5, DocumentText, Add, CloseCircle, DocumentUpload, More } from 'iconsax-react';
 import { useTransactions, useUpdateTransactionCategory } from '../../../hooks/useTransactions';
 import { TransactionsTable } from '../../../components/dashboard/TransactionTable';
 import { formatCurrency } from '../../../utils/helpers';
@@ -66,11 +66,11 @@ export const TransactionsPage = () => {
       title="Transactions"
       subtitle="Keep track of your business transactions."
       extra={
-        <div className="flex gap-2">
-          <Button variant="outline" className="hidden sm:flex w-auto py-2" onClick={() => setUploadModalOpen(true)}>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" className="flex w-auto py-2" onClick={() => setUploadModalOpen(true)}>
             <DocumentUpload size="18" color='#050E1E' /> Upload statement
           </Button>
-          <Button variant="outline" className="hidden sm:flex w-auto py-2" onClick={() => setLogModalOpen(true)}>
+          <Button variant="outline" className="flex w-auto py-2" onClick={() => setLogModalOpen(true)}>
             <Add size="18" color='#050E1E' /> Log transactions
           </Button>
           <Button className="w-auto py-2 bg-brand-blue">
@@ -162,33 +162,69 @@ export const TransactionsPage = () => {
           />
         </div>
 
-        <div className="md:hidden divide-y divide-slate-100">
-          {transactionsList?.map((tx: any) => (
-            <div key={tx.id} className="p-4 space-y-3">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="font-bold text-slate-900">{tx.name}</p>
-                  <p className="text-xs text-slate-500">{tx.description}</p>
-                </div>
-                <p className={`font-bold ${tx.direction === 'CREDIT' ? 'text-emerald-600' : 'text-slate-900'}`}>
-                  {tx.direction === 'CREDIT' ? '+' : '-'} {formatCurrency(tx.amount)}
-                </p>
-              </div>
-              <div className="grid grid-cols-2 gap-4 text-[11px]">
-                <div>
-                  <p className="text-slate-400 uppercase font-bold mb-1">Date</p>
-                  <p className="text-slate-700">{tx.date}</p>
-                </div>
-                <div>
-                  <p className="text-slate-400 uppercase font-bold mb-1">Category</p>
-                  <select className="w-full bg-slate-50 border border-slate-200 rounded p-1">
-                    <option>{tx.category || 'Add'}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="md:hidden space-y-4">
+  {transactionsList?.map((tx: any) => (
+    <div key={tx.id} className="border border-slate-200 rounded-xl overflow-hidden flex flex-col text-sm">
+      
+      {/* Row 1: Name (Gray Background) */}
+      <div className="bg-slate-50 px-4 py-3 flex justify-between items-start">
+        <div>
+          <p className="text-slate-500 font-medium mb-1">Name</p>
+          <p className="font-bold text-slate-800">{tx.name || 'N/A'}</p>
         </div>
+        
+      </div>
+
+      {/* Row 2: Description (White Background) */}
+      <div className="bg-white px-4 py-3">
+        <p className="text-slate-500 font-medium mb-1">Description</p>
+        <p className="font-bold text-slate-800">{tx.description || 'N/A'}</p>
+      </div>
+
+      {/* Row 3: Amount (Gray Background) */}
+      <div className="bg-slate-50 px-4 py-3">
+        <p className="text-slate-500 font-medium mb-1">Amount</p>
+        <p className={`font-bold ${tx.direction === 'CREDIT' ? 'text-emerald-500' : 'text-slate-800'}`}>
+          {tx.direction === 'CREDIT' ? '+' : '-'} {formatCurrency(tx.amount)}
+        </p>
+      </div>
+
+      {/* Row 4: Date (White Background) */}
+      <div className="bg-white px-4 py-3">
+        <p className="text-slate-500 font-medium mb-1">Date</p>
+        <p className="font-bold text-slate-800">{tx.date}</p>
+      </div>
+
+      {/* Row 5: Category (Gray Background) */}
+      <div className="bg-slate-50 px-4 py-3">
+        <p className="text-slate-500 font-medium mb-2">Category</p>
+        {tx.category ? (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pink-50 text-pink-600 text-xs font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span>
+            {tx.category}
+          </span>
+        ) : (
+          <p className="text-slate-400 italic text-xs">Uncategorized</p>
+        )}
+      </div>
+
+      {/* Row 6: Sub-Category (White Background) */}
+      <div className="bg-white px-4 py-3">
+        <p className="text-slate-500 font-medium mb-2">Sub-Category</p>
+        {tx.subCategory ? (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pink-50 text-pink-600 text-xs font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span>
+            {tx.subCategory}
+          </span>
+        ) : (
+          <p className="text-slate-400 italic text-xs">None</p>
+        )}
+      </div>
+
+    </div>         
+  ))}
+</div>
+          
 
         {/* 4. Pagination Footer */}
         <div className="p-4 border-t border-slate-100 flex items-center justify-between">

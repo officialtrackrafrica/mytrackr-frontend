@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
 import { Button } from '../../../components/ui/Button';
-import { SearchNormal1, Setting5, Add, Trash, Edit2, DocumentText } from 'iconsax-react';
+import { SearchNormal1, Setting5, Add, Trash, Edit2, DocumentText, More } from 'iconsax-react';
 import { useAssets, useLiabilities, type AssetListItem, type LiabilityListItem } from './api/useAssetsAndLiabilities';
 import { formatCurrency } from '../../../utils/helpers';
 import { cn } from '../../../utils/cn';
@@ -170,31 +170,53 @@ export const AssetsLiabilitiesPage = () => {
           emptyStateMessage={`No ${activeTab === 'ASSET' ? 'assets' : 'liabilities'} found matching filter criteria.`}
         />
 
-        {/* Mobile View Adaptive Stacking Cards Layout */}
-        <div className="md:hidden divide-y divide-slate-100">
+       {/* MOBILE VIEW (Zebra Cards matching Image)   */}
+        {/* ========================================== */}
+        <div className="md:hidden space-y-4 p-4 bg-white">
           {isLoading ? (
-            <div className="p-6 text-center text-slate-400 text-sm">Loading items...</div>
+            <div className="text-center text-slate-400 text-sm py-4">Loading items...</div>
           ) : listItems.length === 0 ? (
-            <div className="p-6 text-center text-slate-400 text-sm">No items found.</div>
+            <div className="text-center text-slate-400 text-sm py-4">No items found.</div>
           ) : listItems.map((item: any) => {
             const val = item.currentValue ?? item.amountOwed ?? item.value ?? 0;
+            const typeName = item.category || item.liabilityType || 'Uncategorized';
+            
             return (
-              <div key={item.id} className="p-4 space-y-3 bg-white">
-                <div className="flex justify-between items-start">
+              <div key={item.id} className="border border-slate-200 rounded-xl overflow-hidden flex flex-col text-sm">
+                
+                {/* Row 1: Name (Gray Background) */}
+                <div className="bg-slate-50 px-4 py-3 flex justify-between items-start">
                   <div>
-                    <p className="font-bold text-slate-900 text-base">{item.name}</p>
-                    <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-bold mt-1 inline-block", categoryStyles[item.category] || "bg-slate-100 text-slate-600")}>
-                      {item.category}
-                    </span>
+                    <p className="text-slate-500 font-medium mb-1">Name</p>
+                    <p className="font-bold text-slate-800">{item.name || 'N/A'}</p>
                   </div>
-                  <p className="font-bold text-base text-slate-900">
-                    {formatCurrency(Math.abs(val))}
+                  <button className="text-slate-700 p-1 -mr-2 hover:bg-slate-200 rounded-md transition-colors">
+                    <More size="18" variant="Bold" />
+                  </button>
+                </div>
+
+                {/* Row 2: Amount (White Background) */}
+                <div className="bg-white px-4 py-3">
+                  <p className="text-slate-500 font-medium mb-1">Amount</p>
+                  <p className={`font-bold ${activeTab === 'ASSET' ? 'text-emerald-500' : 'text-slate-800'}`}>
+                    {activeTab === 'ASSET' ? '+' : '-'} {formatCurrency(Math.abs(val))}
                   </p>
                 </div>
-                <div className="flex justify-end gap-3 pt-2 border-t border-slate-50">
-                  <button className="text-xs text-slate-500 flex items-center gap-1 hover:text-red-500"><Trash size="14"/> Delete</button>
-                  <button className="text-xs text-slate-500 flex items-center gap-1 hover:text-brand-blue"><Edit2 size="14"/> Edit</button>
+
+                {/* Row 3: Category (Gray Background) */}
+                <div className="bg-slate-50 px-4 py-3">
+                  <p className="text-slate-500 font-medium mb-2">Category</p>
+                  {typeName !== 'Uncategorized' ? (
+                    <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold", categoryStyles[typeName] || "bg-slate-100 text-slate-600")}>
+                      {/* 👉 Using bg-current allows the dot to perfectly match the text color of the pill! */}
+                      <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80"></span>
+                      {typeName}
+                    </span>
+                  ) : (
+                    <p className="text-slate-400 italic text-xs">Uncategorized</p>
+                  )}
                 </div>
+
               </div>
             );
           })}

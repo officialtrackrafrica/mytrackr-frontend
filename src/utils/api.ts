@@ -1,4 +1,3 @@
-// src/utils/api.ts
 import axios, { type InternalAxiosRequestConfig } from 'axios';
 
 // 1. Ensure withCredentials is true so the browser sends your cookies automatically
