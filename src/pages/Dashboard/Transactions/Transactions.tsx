@@ -172,7 +172,9 @@ export const TransactionsPage = () => {
           <p className="text-slate-500 font-medium mb-1">Name</p>
           <p className="font-bold text-slate-800">{tx.name || 'N/A'}</p>
         </div>
-        
+        <button className="text-slate-700 p-1 -mr-2 hover:bg-slate-200 rounded-md transition-colors bg-red-500">
+          <More size="18" variant="Bold" color='#gggggg'/>
+        </button>
       </div>
 
       {/* Row 2: Description (White Background) */}
