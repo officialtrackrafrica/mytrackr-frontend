@@ -52,7 +52,7 @@ console.log(data)
 
   return (
     <DashboardLayout
-      title="Creamy Cakes"
+      title="Cashflow"
       subtitle="Cashflow Statement Overview"
     >
       {/* 1. Date Range Section */}

@@ -3,7 +3,8 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { 
   Home2, ReceiptItem, Chart2, Briefcase, 
   PercentageSquare, Headphone, Setting2,  CloseCircle, ArrowDown2, 
-  LogoutCurve
+  LogoutCurve,
+  Code
 } from 'iconsax-react';
 import { cn } from '../../utils/cn';
 import Logo from '../../assets/Logo.png';
@@ -31,6 +32,12 @@ const navItems = [
 const secondaryItems = [
   { name: 'Support', icon: Headphone, path: '/support' },
   { name: 'Settings', icon: Setting2, path: '/settings' },
+  { 
+    name: 'API Integrations', 
+    icon: Code, 
+    path: 'https://mytrackr.myco.com.ng/developers/integrations',
+    isExternal: true 
+  },
 ];
 
 // 2. Extracted Dropdown Component for Cleanliness
@@ -151,17 +158,38 @@ const { mutate: logout, isPending: isLoggingOut } = useLogout();
       {/* Footer Nav & Profile */}
       <div className="space-y-6">
         <nav className="space-y-1">
-          {secondaryItems.map((item) => (
-            <NavLink
-              key={item.name}
-              to={item.path}
-              onClick={handleLinkClick}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-100"
-            >
-              <item.icon size="20" color='#050E1E'/>
-              {item.name}
-            </NavLink>
-          ))}
+          {secondaryItems.map((item) => {
+            const baseClassName = "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-100";
+
+            //  Render standard anchor tag for external documentation links
+            if (item.isExternal) {
+              return (
+                <a
+                  key={item.name}
+                  href={item.path}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={baseClassName}
+                >
+                  <item.icon size="20" color='#050E1E'/>
+                  {item.name}
+                </a>
+              );
+            }
+
+            // Render standard React Router NavLink for internal app routes
+            return (
+              <NavLink
+                key={item.name}
+                to={item.path}
+                onClick={handleLinkClick}
+                className={baseClassName}
+              >
+                <item.icon size="20" color='#050E1E'/>
+                {item.name}
+              </NavLink>
+            );
+          })}
         </nav>
 
         {/* Profile Card */}

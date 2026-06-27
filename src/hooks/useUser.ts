@@ -10,6 +10,7 @@ export interface User {
   businessName: string;
   isVerified: boolean;
   country: string;
+  businessType: string
 }
 
 export const useUser = () => {

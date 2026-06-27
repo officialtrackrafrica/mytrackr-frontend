@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../utils/api';
+import { toast } from 'sonner';
 
 export interface Transaction {
   id: string;
@@ -161,5 +162,37 @@ export const useUploadStatement = () => {
       // Refresh the transactions table immediately after a successful upload
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
     },
+  });
+};
+
+// Goal 2: Auto-categorize all uncategorized transactions
+export const useRetroactiveAiSync = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async () => {
+      // Runs AI prediction over all uncategorised transactions
+      const { data } = await api.post('/finance/transactions/retroactive-ai-sync');
+      return data; // Returns number of transactions updated
+    },
+    onSuccess: (updatedCount) => {
+      toast.success(`Successfully auto-categorized ${updatedCount} transactions!`);
+      // Invalidate transactions so the table instantly refreshes with the new categories
+      queryClient.invalidateQueries({ queryKey: ['transactions'] }); 
+    },
+    onError: () => {
+      toast.error("Failed to run AI sync. Please try again.");
+    }
+  });
+};
+
+// Goal 1: Fetch category suggestions for a specific transaction
+export const useCategorySuggestions = () => {
+  return useMutation({
+    mutationFn: async ({ transactionId, transactionBody }: { transactionId: string, transactionBody: any }) => {
+      // POST request to get suggestions
+      const { data } = await api.post(`/finance/transactions/${transactionId}/category-suggestions`, transactionBody);
+      return data?.suggestedCategoryIds || [];
+    }
   });
 };

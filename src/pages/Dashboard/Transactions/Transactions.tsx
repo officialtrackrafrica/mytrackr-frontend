@@ -4,7 +4,7 @@ import { DashboardLayout } from '../../../components/layout/DashboardLayout';
 import { Button } from '../../../components/ui/Button';
 import { SearchNormal1, Setting5, DocumentText, Add, CloseCircle, DocumentUpload, More } from 'iconsax-react';
 import { useTransactions, useUpdateTransactionCategory } from '../../../hooks/useTransactions';
-import { TransactionsTable } from '../../../components/dashboard/TransactionTable';
+import { TransactionsTable } from './components/TransactionTable';
 import { formatCurrency } from '../../../utils/helpers';
 import { LogTransactionModal } from './components/LogTransactionsModal';
 import { SortFilterModal } from './components/SortFilterModal';
@@ -163,70 +163,70 @@ export const TransactionsPage = () => {
         </div>
 
         <div className="md:hidden space-y-4">
-  {transactionsList?.map((tx: any) => (
-    <div key={tx.id} className="border border-slate-200 rounded-xl overflow-hidden flex flex-col text-sm">
-      
-      {/* Row 1: Name (Gray Background) */}
-      <div className="bg-slate-50 px-4 py-3 flex justify-between items-start">
-        <div>
-          <p className="text-slate-500 font-medium mb-1">Name</p>
-          <p className="font-bold text-slate-800">{tx.name || 'N/A'}</p>
+          {transactionsList?.map((tx: any) => (
+            <div key={tx.id} className="border border-slate-200 rounded-xl overflow-hidden flex flex-col text-sm">
+
+              {/* Row 1: Name (Gray Background) */}
+              <div className="bg-slate-50 px-4 py-3 flex justify-between items-start">
+                <div>
+                  <p className="text-slate-500 font-medium mb-1">Name</p>
+                  <p className="font-bold text-slate-800">{tx.name || 'N/A'}</p>
+                </div>
+                <button className="text-slate-700 p-1 -mr-2 hover:bg-slate-200 rounded-md transition-colors bg-red-500">
+                  <More size="18" variant="Bold" color='#gggggg' />
+                </button>
+              </div>
+
+              {/* Row 2: Description (White Background) */}
+              <div className="bg-white px-4 py-3">
+                <p className="text-slate-500 font-medium mb-1">Description</p>
+                <p className="font-bold text-slate-800">{tx.description || 'N/A'}</p>
+              </div>
+
+              {/* Row 3: Amount (Gray Background) */}
+              <div className="bg-slate-50 px-4 py-3">
+                <p className="text-slate-500 font-medium mb-1">Amount</p>
+                <p className={`font-bold ${tx.direction === 'CREDIT' ? 'text-emerald-500' : 'text-slate-800'}`}>
+                  {tx.direction === 'CREDIT' ? '+' : '-'} {formatCurrency(tx.amount)}
+                </p>
+              </div>
+
+              {/* Row 4: Date (White Background) */}
+              <div className="bg-white px-4 py-3">
+                <p className="text-slate-500 font-medium mb-1">Date</p>
+                <p className="font-bold text-slate-800">{tx.date}</p>
+              </div>
+
+              {/* Row 5: Category (Gray Background) */}
+              <div className="bg-slate-50 px-4 py-3">
+                <p className="text-slate-500 font-medium mb-2">Category</p>
+                {tx.category ? (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pink-50 text-pink-600 text-xs font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span>
+                    {tx.category}
+                  </span>
+                ) : (
+                  <p className="text-slate-400 italic text-xs">Uncategorized</p>
+                )}
+              </div>
+
+              {/* Row 6: Sub-Category (White Background) */}
+              <div className="bg-white px-4 py-3">
+                <p className="text-slate-500 font-medium mb-2">Sub-Category</p>
+                {tx.subCategory ? (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pink-50 text-pink-600 text-xs font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span>
+                    {tx.subCategory}
+                  </span>
+                ) : (
+                  <p className="text-slate-400 italic text-xs">None</p>
+                )}
+              </div>
+
+            </div>
+          ))}
         </div>
-        <button className="text-slate-700 p-1 -mr-2 hover:bg-slate-200 rounded-md transition-colors bg-red-500">
-          <More size="18" variant="Bold" color='#gggggg'/>
-        </button>
-      </div>
 
-      {/* Row 2: Description (White Background) */}
-      <div className="bg-white px-4 py-3">
-        <p className="text-slate-500 font-medium mb-1">Description</p>
-        <p className="font-bold text-slate-800">{tx.description || 'N/A'}</p>
-      </div>
-
-      {/* Row 3: Amount (Gray Background) */}
-      <div className="bg-slate-50 px-4 py-3">
-        <p className="text-slate-500 font-medium mb-1">Amount</p>
-        <p className={`font-bold ${tx.direction === 'CREDIT' ? 'text-emerald-500' : 'text-slate-800'}`}>
-          {tx.direction === 'CREDIT' ? '+' : '-'} {formatCurrency(tx.amount)}
-        </p>
-      </div>
-
-      {/* Row 4: Date (White Background) */}
-      <div className="bg-white px-4 py-3">
-        <p className="text-slate-500 font-medium mb-1">Date</p>
-        <p className="font-bold text-slate-800">{tx.date}</p>
-      </div>
-
-      {/* Row 5: Category (Gray Background) */}
-      <div className="bg-slate-50 px-4 py-3">
-        <p className="text-slate-500 font-medium mb-2">Category</p>
-        {tx.category ? (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pink-50 text-pink-600 text-xs font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span>
-            {tx.category}
-          </span>
-        ) : (
-          <p className="text-slate-400 italic text-xs">Uncategorized</p>
-        )}
-      </div>
-
-      {/* Row 6: Sub-Category (White Background) */}
-      <div className="bg-white px-4 py-3">
-        <p className="text-slate-500 font-medium mb-2">Sub-Category</p>
-        {tx.subCategory ? (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pink-50 text-pink-600 text-xs font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span>
-            {tx.subCategory}
-          </span>
-        ) : (
-          <p className="text-slate-400 italic text-xs">None</p>
-        )}
-      </div>
-
-    </div>         
-  ))}
-</div>
-          
 
         {/* 4. Pagination Footer */}
         <div className="p-4 border-t border-slate-100 flex items-center justify-between">

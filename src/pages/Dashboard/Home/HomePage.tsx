@@ -1,12 +1,12 @@
 
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
 import { Button } from '../../../components/ui/Button';
-import { More } from 'iconsax-react';
+import { Lock1, More } from 'iconsax-react';
 import { useAccounts } from '../../../hooks/useAccounts';
 import { useTransactions } from '../../../hooks/useTransactions';
 import { usePlanAccess } from '../../../hooks/usePlanAccess';
 import { formatCurrency } from '../../../utils/helpers';
-import { TransactionsTable } from '../../../components/dashboard/TransactionTable';
+import { TransactionsTable } from '../Transactions/components/TransactionTable';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useDashboardMetrics } from '../../../hooks/useDashboard';
@@ -14,7 +14,7 @@ import { Skeleton } from '../../../components/ui/Skeleton';
 import { LinkWebsiteForm } from './components/LinkWebsiteForm';
 import { useGetIntegrations } from '../../../hooks/useIntegrations';
 
-  const toISODate = (date: Date) => date.toISOString().split('T')[0];
+const toISODate = (date: Date) => date.toISOString().split('T')[0];
 
 const getDateRange = (preset: string) => {
   const today = new Date();
@@ -38,15 +38,15 @@ export const HomePage = () => {
   const { accounts, isLoading: accountsLoading } = useAccounts();
   const { data: transactions } = useTransactions({ limit: 10 });
 
-const [datePreset, setDatePreset] = useState('this-month');
+  const [datePreset, setDatePreset] = useState('this-month');
   const { startDate, endDate } = getDateRange(datePreset);
-  const { data: metrics, isLoading: metricsLoading } = useDashboardMetrics(startDate, endDate);
+  const { data: metrics, isLoading: metricsLoading, isError: metricsError } = useDashboardMetrics(startDate, endDate);
   //  Bring in our Gatekeeper hook to check permissions
   const { data: integrations } = useGetIntegrations();
   const hasLinkedWebsite = integrations && integrations.length > 0;
   const { canLinkWebsite, maxBanksAllowed, canUploadManual } = usePlanAccess();
-const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
-console.log(canLinkWebsite, maxBanksAllowed, canUploadManual);
+  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+  console.log(canLinkWebsite, maxBanksAllowed, canUploadManual);
   // We explicitly define the two slots shown in the mockup
   const accountSlots = [
     { id: 'primary', title: 'Primary account', index: 0 },
@@ -76,7 +76,7 @@ console.log(canLinkWebsite, maxBanksAllowed, canUploadManual);
                   <button className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors">
                     <More size="20" />
                   </button>
-                  
+
                   {/* Circular Progress (Filled) */}
                   <div className="relative w-24 h-24 shrink-0">
                     <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
@@ -90,7 +90,7 @@ console.log(canLinkWebsite, maxBanksAllowed, canUploadManual);
                       />
                       <path
                         className="text-brand-blue"
-                        strokeDasharray="70, 100" 
+                        strokeDasharray="70, 100"
                         stroke="currentColor"
                         strokeWidth="4"
                         strokeLinecap="round"
@@ -132,11 +132,11 @@ console.log(canLinkWebsite, maxBanksAllowed, canUploadManual);
 
                 <div className="flex flex-col gap-4 md:w-[70%]">
                   <h4 className="text-base font-bold text-slate-900">{slot.title}</h4>
-                  
+
                   <div className="flex items-center gap-3 pr-8">
                     {/*  Show Mono Button if Plan Allows */}
                     {maxBanksAllowed > slot.index ? (
-                      <Button className="bg-brand-blue text-white py-2 px-4 text-xs font-semibold h-auto" onClick={()=> navigate('/link-bank')}>
+                      <Button className="bg-brand-blue text-white py-2 px-4 text-xs font-semibold h-auto" onClick={() => navigate('/link-bank')}>
                         Link Mono
                       </Button>
                     ) : null}
@@ -178,9 +178,9 @@ console.log(canLinkWebsite, maxBanksAllowed, canUploadManual);
           <h2 className="text-lg font-bold text-slate-900">Financial Overview</h2>
           <p className="text-sm text-slate-500">Track your revenue, expenses, and profit</p>
         </div>
-        
+
         {/* The single date picker controlling the dashboard */}
-        <select 
+        <select
           value={datePreset}
           onChange={(e) => setDatePreset(e.target.value)}
           className="mt-4 sm:mt-0 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:ring-1 focus:ring-brand-blue outline-none cursor-pointer shadow-sm"
@@ -195,12 +195,25 @@ console.log(canLinkWebsite, maxBanksAllowed, canUploadManual);
       {/* 3. KEY METRICS ROW (The Three Stats)       */}
       {/* ========================================== */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        
+
         {/* Revenue Card */}
         <div className="p-6 border border-slate-100 rounded-2xl bg-white shadow-sm">
           <p className="text-sm font-medium text-slate-500 mb-2">Total Revenue</p>
           {metricsLoading ? (
             <Skeleton className="h-8 w-32" />
+          ) : metricsError ? (
+            <div className="flex flex-col items-start gap-3 mt-1">
+              <div className="flex items-center gap-2 text-slate-400">
+                <Lock1 size="18" />
+                <span className="text-sm font-semibold">Data locked</span>
+              </div>
+              <Button
+                onClick={() => navigate('/subscribe')} //  Routes them to your plans page
+                className="w-auto py-1.5 px-4 text-xs font-semibold bg-brand-blue text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Subscribe to unlock
+              </Button>
+            </div>
           ) : (
             <p className="text-3xl font-bold text-slate-900">
               {formatCurrency(metrics?.revenue || 0, 'NGN')}
@@ -213,6 +226,19 @@ console.log(canLinkWebsite, maxBanksAllowed, canUploadManual);
           <p className="text-sm font-medium text-slate-500 mb-2">Total Expenses</p>
           {metricsLoading ? (
             <Skeleton className="h-8 w-32" />
+          ) : metricsError ? (
+            <div className="flex flex-col items-start gap-3 mt-1">
+              <div className="flex items-center gap-2 text-slate-400">
+                <Lock1 size="18" />
+                <span className="text-sm font-semibold">Data locked</span>
+              </div>
+              <Button
+                onClick={() => navigate('/subscribe')} //  Routes them to your plans page
+                className="w-auto py-1.5 px-4 text-xs font-semibold bg-brand-blue text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Subscribe to unlock
+              </Button>
+            </div>
           ) : (
             <p className="text-3xl font-bold text-slate-900">
               {formatCurrency(metrics?.expenses || 0, 'NGN')}
@@ -225,6 +251,19 @@ console.log(canLinkWebsite, maxBanksAllowed, canUploadManual);
           <p className="text-sm font-medium text-slate-500 mb-2">Net Profit</p>
           {metricsLoading ? (
             <Skeleton className="h-8 w-32" />
+          ) : metricsError ? (
+            <div className="flex flex-col items-start gap-3 mt-1">
+              <div className="flex items-center gap-2 text-slate-400">
+                <Lock1 size="18" />
+                <span className="text-sm font-semibold">Data locked</span>
+              </div>
+              <Button
+                onClick={() => navigate('/subscribe')} //  Routes them to your plans page
+                className="w-auto py-1.5 px-4 text-xs font-semibold bg-brand-blue text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Subscribe to unlock
+              </Button>
+            </div>
           ) : (
             <p className={`text-3xl font-bold ${Number(metrics?.netProfit) < 0 ? 'text-red-500' : 'text-emerald-500'}`}>
               {formatCurrency(metrics?.netProfit || 0, 'NGN')}

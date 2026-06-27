@@ -33,7 +33,7 @@ export const PaymentSuccessPage = () => {
 
         <Button 
           className="w-full py-3 bg-brand-blue text-white"
-          onClick={() => navigate('/dashboard/settings')} // Adjust to your actual dashboard route
+          onClick={() => navigate('/dashboard')} // Adjust to your actual dashboard route
         >
           Return to Dashboard
         </Button>

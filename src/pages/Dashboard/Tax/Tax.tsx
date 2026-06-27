@@ -5,19 +5,22 @@ import { Button } from '../../../components/ui/Button';
 import { useTaxCalculatorEstimate } from './api/useTaxCalculator';
 import { formatCurrency } from '../../../utils/helpers';
 import { CloseCircle, Calculator } from 'iconsax-react';
+import { useUser } from '../../../hooks/useUser';
+import { TaxCalculationCard } from './components/TaxCalculationCard';
 
 export const TaxCalculatorPage = () => {
   const [showBrackets, setShowBrackets] = useState(true);
-  
-  // Dynamic form filter/input values state layers
+  const { user } = useUser();
+  const businessType = user?.businessType;
+  console.log(user)
   const [year, setYear] = useState<number>(2026);
   const [inputs, setInputs] = useState({
-    healthInsurance: '120000',
-    lifeInsurance: '80000',
-    pension: '300000',
-    housingFund: '600000',
-    rent: '900000',
-    extra: '50000',
+    healthInsurance: '',
+    lifeInsurance: '',
+    pension: '',
+    housingFund: '',
+    rent: '',
+    extra: '',
   });
 
   // 1. Unpack data payload params into flat contract parameters for the GET serializer
@@ -33,7 +36,7 @@ export const TaxCalculatorPage = () => {
 
   // 2. Feed current config state to lazy query instance
   const { data, refetch, isFetching } = useTaxCalculatorEstimate(queryParams);
-console.log(data)
+
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
     refetch(); // Fires off the custom formatted GET query string
@@ -139,7 +142,14 @@ console.log(data)
               </div>
             )}
           </div>
-
+{data && (
+            <div className="animate-in slide-in-from-bottom-4 fade-in duration-500">
+              <TaxCalculationCard 
+                taxData={data} 
+                businessType={businessType || ''} 
+              />
+            </div>
+          )}
          
         </div>
 
