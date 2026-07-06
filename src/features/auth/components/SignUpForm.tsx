@@ -19,8 +19,6 @@ export const SignUpForm = () => {
   };
 
   const handleGoogleSignup = () => {
-    //  Crucial: This must be a full page redirect, NOT a fetch/axios request.
-    // Replace this with your actual backend base URL (e.g., from your environment variables)
     const API_BASE_URL = import.meta.env.VITE_API_URL;
     
     // Redirects the browser to your backend, kicking off the OAuth flow

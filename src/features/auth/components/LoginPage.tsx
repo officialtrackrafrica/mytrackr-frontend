@@ -5,6 +5,7 @@ import { useLogin } from '../hooks/useLogin';
 import { Input } from '../../../components/ui/Input';
 import { Button } from '../../../components/ui/Button';
 import Logo from "../../../assets/Logo.png";
+import { Google } from 'iconsax-react';
 
 
 export const LoginPage = () => {
@@ -13,6 +14,12 @@ export const LoginPage = () => {
 
   const onSubmit = (data: any) => {
     mutate(data);
+  };
+
+  const handleGoogleLogin = () => {
+    const API_BASE_URL = import.meta.env.VITE_API_URL;
+    
+    window.location.href = `${API_BASE_URL}/auth/google`;
   };
 
   return (
@@ -55,6 +62,16 @@ export const LoginPage = () => {
           <Button type="submit" isLoading={isPending}>
             Login
           </Button>
+          <Button 
+              type="button" 
+              variant="outline" 
+              disabled={isPending} 
+              onClick={handleGoogleLogin}
+              className="w-full"
+            >
+              <Google size="20" color="#4285F4" variant="Bold" />
+              Log in with Google
+            </Button>
         </form>
 
         <p className="text-center text-sm text-slate-500">
