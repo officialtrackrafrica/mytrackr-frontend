@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useLogin } from '../hooks/useLogin';
 import { Input } from '../../../components/ui/Input';
 import { Button } from '../../../components/ui/Button';
-import Logo from "../../../assets/Logo.png"
+import Logo from "../../../assets/Logo.png";
 
 
 export const LoginPage = () => {

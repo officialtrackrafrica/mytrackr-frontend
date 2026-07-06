@@ -20,6 +20,11 @@ import { SettingsPage } from './pages/Dashboard/Settings/SettingsPage';
 import { PaymentSuccessPage } from './pages/Dashboard/Settings/PaymentSuccessPage';
 import { SupportPage } from './pages/Dashboard/Support/SupportPage';
 import { SubscriptionPage } from './features/auth/components/SubscriptionPage';
+import { ForgotPasswordPage } from './features/auth/components/ForgotPasswordPage';
+import { ResetPasswordPage } from './features/auth/components/ResetPasswordPage';
+import { PasswordSuccessPage } from './features/auth/components/PasswordSuccessPage';
+import { EmailVerifiedPage } from './features/auth/components/EmailVerifiedPage';
+import { AllSetupPage } from './features/auth/components/AllSetupPage';
 
 function App() {
   return (
@@ -31,6 +36,12 @@ function App() {
         <Route path="/signup" element={<SignUpForm />} />
         <Route path="/verify-email" element={<VerifyOTPPage />} />
         <Route path="/link-bank" element={<LinkBankPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/verify-otp" element={<VerifyOTPPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/password-success" element={<PasswordSuccessPage />} />
+        <Route path="/email-verified" element={<EmailVerifiedPage />} />
+        <Route path="/all-setup" element={<AllSetupPage />} />
         <Route element={<SubscriptionPage />} path="/subscribe" />
         <Route
           path="/dashboard"

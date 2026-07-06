@@ -2,9 +2,9 @@
 import { TickCircle, Radio } from 'iconsax-react';
 
 const steps = [
-  { id: 1, label: 'Your details', desc: 'Please provide your name, email, business name, and password' },
+  { id: 1, label: 'Your details', desc: 'Please provide your name, business name, business type, email and create a password.' },
   { id: 2, label: 'Verification', desc: 'Verify your account' },
-  { id: 3, label: 'Add your bank account', desc: 'Connect your bank accounts for transaction syncing' },
+  { id: 3, label: 'Add your bank account', desc: 'Connect your accounts for transaction syncing' },
 ];
 
 export const StepIndicator = ({ currentStep }: { currentStep: number }) => {

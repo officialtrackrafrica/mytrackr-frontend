@@ -1,7 +1,7 @@
 
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
 import { Button } from '../../../components/ui/Button';
-import { Lock1, More } from 'iconsax-react';
+import { InfoCircle, Lock1, More } from 'iconsax-react';
 import { useAccounts } from '../../../hooks/useAccounts';
 import { useTransactions } from '../../../hooks/useTransactions';
 import { usePlanAccess } from '../../../hooks/usePlanAccess';
@@ -13,6 +13,7 @@ import { useDashboardMetrics } from '../../../hooks/useDashboard';
 import { Skeleton } from '../../../components/ui/Skeleton';
 import { LinkWebsiteForm } from './components/LinkWebsiteForm';
 import { useGetIntegrations } from '../../../hooks/useIntegrations';
+import { SetupGuideModal } from './components/SetupGuideModal';
 
 const toISODate = (date: Date) => date.toISOString().split('T')[0];
 
@@ -37,16 +38,16 @@ export const HomePage = () => {
   const navigate = useNavigate()
   const { accounts, isLoading: accountsLoading } = useAccounts();
   const { data: transactions } = useTransactions({ limit: 10 });
-
+const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
   const [datePreset, setDatePreset] = useState('this-month');
   const { startDate, endDate } = getDateRange(datePreset);
-  const { data: metrics, isLoading: metricsLoading, isError: metricsError } = useDashboardMetrics(startDate, endDate);
+  const { data: metrics, isLoading: metricsLoading, error: metricsError } = useDashboardMetrics(startDate, endDate);
   //  Bring in our Gatekeeper hook to check permissions
   const { data: integrations } = useGetIntegrations();
   const hasLinkedWebsite = integrations && integrations.length > 0;
   const { canLinkWebsite, maxBanksAllowed, canUploadManual } = usePlanAccess();
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
-  console.log(canLinkWebsite, maxBanksAllowed, canUploadManual);
+  // const isLocked = metricsError?.response?.status === 403 || metricsError?.status === 403;
   // We explicitly define the two slots shown in the mockup
   const accountSlots = [
     { id: 'primary', title: 'Primary account', index: 0 },
@@ -54,7 +55,19 @@ export const HomePage = () => {
   ];
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+    extra={
+      <div className="flex justify-end mb-6">
+        <button 
+          onClick={() => setIsGuideModalOpen(true)}
+          className="flex items-center gap-2 text-slate-600 hover:text-brand-blue text-sm font-semibold transition-colors bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-sm cursor-pointer"
+        >
+          <InfoCircle size="18" color='#475467'/>
+          Guide
+        </button>
+      </div>
+    }
+    >
 
       {/* Account Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -137,7 +150,7 @@ export const HomePage = () => {
                     {/*  Show Mono Button if Plan Allows */}
                     {maxBanksAllowed > slot.index ? (
                       <Button className="bg-brand-blue text-white py-2 px-4 text-xs font-semibold h-auto" onClick={() => navigate('/link-bank')}>
-                        Link Mono
+                        Link Bank Account
                       </Button>
                     ) : null}
 
@@ -169,10 +182,7 @@ export const HomePage = () => {
         )}
       </div>
 
-      {/* Main Charts Grid */}
-      {/* <div */}
-      {/* 2. GLOBAL METRICS CONTROLLER               */}
-      {/* ========================================== */}
+   
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6">
         <div>
           <h2 className="text-lg font-bold text-slate-900">Financial Overview</h2>
@@ -286,6 +296,10 @@ export const HomePage = () => {
           <LinkWebsiteForm onClose={() => setIsLinkModalOpen(false)} />
         </div>
       )}
+      <SetupGuideModal 
+        isOpen={isGuideModalOpen} 
+        onClose={() => setIsGuideModalOpen(false)} 
+      />
     </DashboardLayout>
   );
 };

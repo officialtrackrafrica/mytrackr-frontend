@@ -1,14 +1,11 @@
-// src/features/auth/components/SignUpForm.tsx
 import { useForm, Controller } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { Google } from 'iconsax-react';
-
 import { Input } from '../../../components/ui/Input';
 import { Button } from '../../../components/ui/Button';
 import { Dropdown } from '../../../components/ui/Dropdown';
 import { AuthLayout } from '../../../components/layout/AuthLayout';
 import Logo from "../../../assets/Logo.png";
-
 import { useSignUp } from '../hooks/useSignUp';
 import { useBusinessTypes } from '../../../hooks/useBusiness';
 
@@ -18,12 +15,21 @@ export const SignUpForm = () => {
   const { mutate: signUp, isPending: isSigningUp } = useSignUp();
 
   const onSubmit = (data: any) => {
-    signUp(data); // 👉 Your hook handles the success toast and navigation!
+    signUp(data); 
+  };
+
+  const handleGoogleSignup = () => {
+    //  Crucial: This must be a full page redirect, NOT a fetch/axios request.
+    // Replace this with your actual backend base URL (e.g., from your environment variables)
+    const API_BASE_URL = import.meta.env.VITE_API_URL;
+    
+    // Redirects the browser to your backend, kicking off the OAuth flow
+    window.location.href = `${API_BASE_URL}/auth/google`;
   };
 
   return (
     <AuthLayout currentStep={1}>
-      <div className="flex flex-col items-center w-full">
+      <div className="flex flex-col items-center justify-center w-fit mx-auto">
         
         <div className="flex flex-col items-center text-center">
           <img src={Logo} alt="MyTrackr Logo" className="w-24 mb-4" />
@@ -62,9 +68,22 @@ export const SignUpForm = () => {
           <Input label="Email*" type="email" placeholder="Enter your email" error={errors.email?.message as string} {...register("email", { required: "Required" })} />
           <Input label="Password*" type="password" placeholder="Create a password" error={errors.password?.message as string} {...register("password", { required: "Required", minLength: { value: 8, message: "Must be at least 8 characters" } })} />
 
+{/* <div className="flex items-start gap-3 mt-4">
+            <input 
+              type="checkbox" 
+              id="terms"
+              className="mt-1 w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer"
+              // {...register("agreeToTerms", { required: true })}
+            />
+            <label htmlFor="terms" className="text-sm text-slate-700 leading-relaxed cursor-pointer">
+              I have read and agreed to the{' '}
+              <Link to="/privacy" className="font-bold text-slate-900 hover:underline">privacy notice</Link>, and{' '}
+              <Link to="/cookies" className="font-bold text-slate-900 hover:underline">cookie policy</Link>.
+            </label>
+          </div> */}
           <div className="pt-2 space-y-3">
-            <Button type="submit" isLoading={isSigningUp}>Create account</Button>
-            <Button type="button" variant="outline" disabled={isSigningUp}>
+            <Button type="submit" isLoading={isSigningUp}>Get Started</Button>
+            <Button type="button" variant="outline" disabled={isSigningUp} onClick={handleGoogleSignup}>
               <Google size="20" color="#4285F4" variant="Bold" />
               Sign up with Google
             </Button>

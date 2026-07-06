@@ -40,8 +40,10 @@ export const UploadStatementModal = ({ isOpen, onClose }: UploadStatementModalPr
           setFile(null);
           onClose();
         },
-        onError: () => {
-          toast.error("Failed to upload statement. Please try again.");
+        onError: (error: any) => {
+          const backendMessage = error?.response?.data?.message || "Failed to upload statement. Please try again.";
+          
+          toast.error(backendMessage);
         }
       }
     );

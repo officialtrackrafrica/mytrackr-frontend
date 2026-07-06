@@ -29,7 +29,7 @@ const { mutate, isPending } = useMonoInitiate();
             className="bg-[#1652F0] hover:bg-[#0039CB] py-4"
           >
            
-            Connect with Mono
+            Link Bank Account
           </Button>
 
           <Button 
