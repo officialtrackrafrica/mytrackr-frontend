@@ -68,19 +68,19 @@ export const SignUpForm = () => {
           <Input label="Email*" type="email" placeholder="Enter your email" error={errors.email?.message as string} {...register("email", { required: "Required" })} />
           <Input label="Password*" type="password" placeholder="Create a password" error={errors.password?.message as string} {...register("password", { required: "Required", minLength: { value: 8, message: "Must be at least 8 characters" } })} />
 
-{/* <div className="flex items-start gap-3 mt-4">
+<div className="flex items-start gap-3 mt-4">
             <input 
               type="checkbox" 
               id="terms"
               className="mt-1 w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer"
-              // {...register("agreeToTerms", { required: true })}
+              {...register("acceptTermsAndConditions", { required: true })}
             />
             <label htmlFor="terms" className="text-sm text-slate-700 leading-relaxed cursor-pointer">
               I have read and agreed to the{' '}
-              <Link to="/privacy" className="font-bold text-slate-900 hover:underline">privacy notice</Link>, and{' '}
-              <Link to="/cookies" className="font-bold text-slate-900 hover:underline">cookie policy</Link>.
+              <a href='https://mytrackrservices.com/privacy' target='blank' className="font-bold text-slate-900 hover:underline">privacy notice</a>, and{' '}
+              <a href='https://mytrackrservices.com/privacy' target='blank' className="font-bold text-slate-900 hover:underline">cookie policy</a>.
             </label>
-          </div> */}
+          </div>
           <div className="pt-2 space-y-3">
             <Button type="submit" isLoading={isSigningUp}>Get Started</Button>
             <Button type="button" variant="outline" disabled={isSigningUp} onClick={handleGoogleSignup}>
