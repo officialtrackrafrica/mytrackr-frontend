@@ -29,10 +29,9 @@ export const SignUpForm = () => {
     <AuthLayout currentStep={1}>
       <div className="flex flex-col items-center justify-center w-fit mx-auto">
         
-        <div className="flex flex-col items-center text-center">
+        <div className="flex flex-col items-center text-center mb-8">
           <img src={Logo} alt="MyTrackr Logo" className="w-24 mb-4" />
           <h2 className="text-2xl font-bold text-slate-800">Sign up</h2>
-          <p className="text-slate-500 text-sm mb-8">Start your 30-day free trial.</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">

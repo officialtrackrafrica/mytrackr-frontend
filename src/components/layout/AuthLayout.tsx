@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { StepIndicator } from '../../features/auth/components/StepIndicator';
-import { Graph } from 'iconsax-react';
+import Logo from "../../assets/Logo.png";
 import { cn } from '../../utils/cn';
 
 interface AuthLayoutProps {
@@ -15,14 +15,14 @@ export const AuthLayout = ({ children, currentStep }: AuthLayoutProps) => {
       <div className="hidden lg:flex w-[400px] bg-[#0A2540] p-12 flex-col justify-between">
         <div>
           <div className="flex items-center gap-2 mb-20">
-             <Graph size="32" color="#2E7EFF" variant="Bold"/>
+             <img src={Logo} alt="MyTrackr Logo" className="w-12" />
              <span className="text-white font-bold text-xl">MyTrackr</span>
           </div>
           <StepIndicator currentStep={currentStep} />
         </div>
         <div className="text-slate-400 text-xs flex justify-between">
           <span>© MyTrackr 2026</span>
-          <span>help@mytrackr.com</span>
+          <span>nifemi@mytrackrservices.com</span>
         </div>
       </div>
 
