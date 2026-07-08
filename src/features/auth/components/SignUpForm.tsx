@@ -30,7 +30,7 @@ export const SignUpForm = () => {
       <div className="flex flex-col items-center justify-center w-fit mx-auto">
         
         <div className="flex flex-col items-center text-center mb-8">
-          <img src={Logo} alt="MyTrackr Logo" className="w-24 mb-4" />
+          <img src={Logo} alt="MyTrackr Logo" className="w-24" />
           <h2 className="text-2xl font-bold text-slate-800">Sign up</h2>
         </div>
 
