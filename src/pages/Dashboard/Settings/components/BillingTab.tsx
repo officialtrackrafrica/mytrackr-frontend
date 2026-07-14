@@ -2,10 +2,43 @@
 import { ArrowDown, ArrowRight, DocumentDownload, Sms, TickCircle } from 'iconsax-react';
 import { Button } from '../../../../components/ui/Button';
 import { useState } from 'react';
-import { useBillingHistory, useCurrentPlan, usePaymentMethod } from '../api/useBilling';
+import { useBillingHistory, useCancelSubscription, useCurrentPlan, usePaymentMethod } from '../api/useBilling';
 import { formatDate } from '../../../../utils/helpers';
 import { UpgradePlanView } from './UpgradePlan';
 import { Skeleton } from '../../../../components/ui/Skeleton';
+import { toast } from 'sonner';
+
+const CancelSubscriptionModal = ({ isOpen, onClose, onConfirm, isPending }: any) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in">
+      <div className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl animate-in zoom-in-95 duration-200">
+        <h3 className="text-lg font-bold text-slate-900 mb-2">Cancel Subscription</h3>
+        <p className="text-sm text-slate-500 mb-6">
+          Are you sure you want to cancel your current subscription? You will lose access to premium features at the end of your billing cycle.
+        </p>
+        <div className="flex gap-3">
+          <Button 
+            variant="outline" 
+            className="flex-1" 
+            onClick={onClose} 
+            disabled={isPending}
+          >
+            Keep Plan
+          </Button>
+          <Button 
+            className="flex-1 bg-red-600 text-white hover:bg-red-700 border-transparent" 
+            onClick={onConfirm} 
+            isLoading={isPending}
+          >
+            Yes, Cancel
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const BillingTab = () => {
   const [activeView, setActiveView] = useState<'dashboard' | 'upgrade'>('dashboard');
@@ -13,6 +46,21 @@ export const BillingTab = () => {
   const { data: currentPlan, isLoading: loadingPlan } = useCurrentPlan();
   const { data: billingHistory, isLoading: loadingHistory } = useBillingHistory();
   const { data: paymentMethod, isLoading: loadingPayment } = usePaymentMethod();
+const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const { mutate: cancelSubscription, isPending: isCanceling } = useCancelSubscription();
+
+  const handleConfirmCancel = () => {
+    cancelSubscription(undefined, {
+      onSuccess: () => {
+        toast.success("Subscription cancelled successfully.");
+        setIsCancelModalOpen(false); // Close modal on success
+      },
+      onError: () => {
+        toast.error("Failed to cancel subscription. Please try again.");
+      }
+    });
+  };
+
   // If the user clicks "Upgrade", we return the new view instead of the dashboard!
   if (activeView === 'upgrade') {
     return (
@@ -44,15 +92,13 @@ export const BillingTab = () => {
               ) : (
 
 
-                <span className="px-2 py-0.5 bg-blue-50 text-brand-blue text-[10px] font-bold rounded-full">{currentPlan?.activePlan.interval || 'Monthly'}</span>
+                <span className="px-2 py-0.5 bg-blue-50 text-brand-blue text-[10px] font-bold rounded-full">{currentPlan?.activePlan?.interval || 'Monthly'}</span>
               )}
             </div>
             {loadingPlan ? (
               <Skeleton className="h-4 w-16 rounded-full" />
             ) : (
-
-
-              <p className="text-xs text-slate-500">{currentPlan?.activePlan.name || 'Loading plan details...'}</p>
+              <p className="text-xs text-slate-500">{currentPlan?.activePlan?.name || 'No current plan'}</p>
             )}
 
             <div className="mt-4 flex items-end gap-1">
@@ -61,7 +107,7 @@ export const BillingTab = () => {
               ) : (
 
 
-                <span className="text-4xl font-black text-slate-900 tracking-tight">{loadingPlan ? '...' : `₦${currentPlan?.activePlan.price || 0}`}</span>
+                <span className="text-4xl font-black text-slate-900 tracking-tight">{loadingPlan ? '...' : `₦${currentPlan?.activePlan?.price || 0}`}</span>
               )}
               <span className="text-sm text-slate-500 font-medium pb-1">per month</span>
             </div>
@@ -70,7 +116,11 @@ export const BillingTab = () => {
             <button className="text-xs font-bold text-brand-blue flex items-center gap-1 hover:text-blue-800 transition-colors" onClick={() => setActiveView('upgrade')}>
               Upgrade plan <ArrowRight size="14" />
             </button>
-            <button className="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors">
+           <button 
+              onClick={() => setIsCancelModalOpen(true)}
+              disabled={!currentPlan?.activePlan} 
+              className="text-xs font-bold text-slate-500 hover:text-red-600 transition-colors disabled:opacity-50"
+            >
               Cancel plan
             </button>
           </div>
@@ -177,7 +227,12 @@ export const BillingTab = () => {
           </table>
         </div>
       </div>
-
+<CancelSubscriptionModal 
+        isOpen={isCancelModalOpen}
+        onClose={() => setIsCancelModalOpen(false)}
+        onConfirm={handleConfirmCancel}
+        isPending={isCanceling}
+      />
     </div>
   );
 };

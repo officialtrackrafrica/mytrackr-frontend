@@ -59,7 +59,7 @@ export const TaxCalculationCard = ({ taxData, businessType }: TaxCalculationCard
 
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col sm:flex-row gap-4 justify-between items-center">
               <div>
-                <p className="text-sm text-slate-500 font-medium">Estimated Annual Tax</p>
+                <p className="text-2xl text-slate-500 font-medium">Estimated Annual Tax</p>
                 <p className="text-2xl font-black text-slate-900 mt-1">
                   {formatCurrency(pit.estimatedAnnualTax, 'NGN')}
                 </p>
@@ -116,11 +116,13 @@ export const TaxCalculationCard = ({ taxData, businessType }: TaxCalculationCard
                 </p>
                 {cit.isExempt && (
                   <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded mt-2">
-                    <InfoCircle size="12" /> Tax Exempt Status Active
+                    <InfoCircle size="12" color="green" /> Tax Exempt Status Active
                   </span>
                 )}
               </div>
             </div>
+            <p className='text-lg'> <span className='font-bold'> Disclaimer:</span> This is a planning estimate only, not tax advice. Your actual tax may differ. 
+</p>
           </div>
         )}
 

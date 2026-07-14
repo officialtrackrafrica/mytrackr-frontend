@@ -75,7 +75,7 @@ export const SignUpForm = () => {
             <label htmlFor="terms" className="text-sm text-slate-700 leading-relaxed cursor-pointer">
               I have read and agreed to the{' '}
               <a href='https://mytrackrservices.com/privacy' target='blank' className="font-bold text-slate-900 hover:underline">privacy notice</a>, and{' '}
-              <a href='https://mytrackrservices.com/privacy' target='blank' className="font-bold text-slate-900 hover:underline">cookie policy</a>.
+              <a href='https://mytrackrservices.com/cookies' target='blank' className="font-bold text-slate-900 hover:underline">cookie policy</a>.
             </label>
           </div>
           <div className="pt-2 space-y-3">

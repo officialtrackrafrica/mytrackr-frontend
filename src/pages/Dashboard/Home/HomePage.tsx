@@ -1,7 +1,7 @@
 
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
 import { Button } from '../../../components/ui/Button';
-import { InfoCircle, Lock1, More } from 'iconsax-react';
+import { Add, DocumentUpload, InfoCircle, Lock1, More } from 'iconsax-react';
 import { useAccounts } from '../../../hooks/useAccounts';
 import { useTransactions } from '../../../hooks/useTransactions';
 import { usePlanAccess } from '../../../hooks/usePlanAccess';
@@ -14,6 +14,8 @@ import { Skeleton } from '../../../components/ui/Skeleton';
 import { LinkWebsiteForm } from './components/LinkWebsiteForm';
 import { useGetIntegrations } from '../../../hooks/useIntegrations';
 import { SetupGuideModal } from './components/SetupGuideModal';
+import { LogTransactionModal } from '../Transactions/components/LogTransactionsModal';
+import { UploadStatementModal } from '../Transactions/components/UploadStatementModal';
 
 const toISODate = (date: Date) => date.toISOString().split('T')[0];
 
@@ -42,13 +44,12 @@ const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
   const [datePreset, setDatePreset] = useState('this-month');
   const { startDate, endDate } = getDateRange(datePreset);
   const { data: metrics, isLoading: metricsLoading, error: metricsError } = useDashboardMetrics(startDate, endDate);
-  //  Bring in our Gatekeeper hook to check permissions
+    const [isLogModalOpen, setLogModalOpen] = useState(false);
+  const [isUploadModalOpen, setUploadModalOpen] = useState(false);
   const { data: integrations } = useGetIntegrations();
   const hasLinkedWebsite = integrations && integrations.length > 0;
   const { canLinkWebsite, maxBanksAllowed, canUploadManual } = usePlanAccess();
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
-  // const isLocked = metricsError?.response?.status === 403 || metricsError?.status === 403;
-  // We explicitly define the two slots shown in the mockup
   const accountSlots = [
     { id: 'primary', title: 'Primary account', index: 0 },
     { id: 'secondary', title: 'Secondary account', index: 1 }
@@ -57,7 +58,13 @@ const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
   return (
     <DashboardLayout
     extra={
-      <div className="flex justify-end mb-6">
+      <div className="flex justify-end mb-6 gap-2">
+                  <Button variant="primary" className="flex w-auto py-2" onClick={() => setUploadModalOpen(true)}>
+                    <DocumentUpload size="18" color='white' /> Upload statement
+                  </Button>
+                  <Button variant="outline" className="flex w-auto py-2" onClick={() => setLogModalOpen(true)}>
+                    <Add size="18" color='#050E1E' /> Log transactions
+                  </Button>
         <button 
           onClick={() => setIsGuideModalOpen(true)}
           className="flex items-center gap-2 text-slate-600 hover:text-brand-blue text-sm font-semibold transition-colors bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-sm cursor-pointer"
@@ -287,7 +294,7 @@ const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
       <div className="p-6 border border-slate-100 rounded-2xl bg-white shadow-sm">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-lg">Recent transactions</h3>
-          <button className="text-brand-blue text-sm font-bold hover:underline">View all</button>
+          <Button onClick={() => navigate('/transactions')} className="text-white text-sm font-bold hover:underline w-fit">View all</Button>
         </div>
         <TransactionsTable data={transactions || []} />
       </div>
@@ -296,10 +303,20 @@ const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
           <LinkWebsiteForm onClose={() => setIsLinkModalOpen(false)} />
         </div>
       )}
+      <LogTransactionModal
+              isOpen={isLogModalOpen}
+              onClose={() => {
+                setLogModalOpen(false);
+              }}
+            />
       <SetupGuideModal 
         isOpen={isGuideModalOpen} 
         onClose={() => setIsGuideModalOpen(false)} 
       />
+       <UploadStatementModal
+              isOpen={isUploadModalOpen}
+              onClose={() => setUploadModalOpen(false)}
+            />
     </DashboardLayout>
   );
 };

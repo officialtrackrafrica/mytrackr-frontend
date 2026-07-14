@@ -4,6 +4,9 @@ import { HambergerMenu } from 'iconsax-react';
 import { useBusiness } from '../../hooks/useBusiness';
 import { cn } from '../../utils/cn';
 import Logo from '../../assets/Logo.png';
+import { useCheckGoogleSignup } from '../../features/auth/hooks/useSignUp';
+import { GoogleOnboardingModal } from '../GoogleOnboardingModal';
+import { useUser } from '../../hooks/useUser';
 
 
 interface Props {
@@ -16,6 +19,15 @@ interface Props {
 export const DashboardLayout = ({ children, title, subtitle, extra }: Props) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const { business } = useBusiness();
+  const { user, isLoading: isUserLoading } = useUser();
+  const { data: googleCheck, isLoading: isChecking } = useCheckGoogleSignup();
+
+ //  1. Derive the state directly. No useState, no useEffect!
+  const showOnboarding = googleCheck?.signedUpWithGoogle === true && user?.hasSelectedBusinessType === false;
+
+  if (isChecking || isUserLoading) {
+    return <div className="min-h-screen bg-slate-50 flex items-center justify-center">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -86,6 +98,9 @@ export const DashboardLayout = ({ children, title, subtitle, extra }: Props) => 
           {children}
         </div>
       </main>
+      <GoogleOnboardingModal 
+        isOpen={showOnboarding} 
+      />
     </div>
   );
 };

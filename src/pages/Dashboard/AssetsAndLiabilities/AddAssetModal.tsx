@@ -9,6 +9,7 @@ import { useBusiness } from '../../../hooks/useBusiness';
 import { toast } from 'sonner';
 import { cn } from '../../../utils/cn';
 import { useCategories } from '../../../hooks/useCategories';
+import { useEffect } from 'react';
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -37,6 +38,11 @@ export const AddAssetModal = ({ isOpen, onClose, type }: AddAssetModalProps) => 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
+  useEffect(() => {
+    if (isOpen) {
+      reset(); // Clears the form every time the modal opens
+    }
+  }, [isOpen, type, reset]);
 
   const { data: categories, isLoading: isLoadingCategories } = useCategories();
   const { data: liabilityTypes, isLoading: isLoadingLiabilityTypes } = useLiabilityTypes();

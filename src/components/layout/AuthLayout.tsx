@@ -12,7 +12,7 @@ export const AuthLayout = ({ children, currentStep }: AuthLayoutProps) => {
   return (
     <div className="flex min-h-screen bg-white">
       {/* Left Side: Desktop Sidebar */}
-      <div className="hidden lg:flex w-[400px] bg-[#0A2540] p-12 flex-col justify-between">
+      <div className="hidden lg:flex w-[20%] bg-[#0A2540] p-6 flex-col justify-between">
         <div>
           <div className="flex items-center gap-2 mb-20">
              <img src={Logo} alt="MyTrackr Logo" className="w-12" />

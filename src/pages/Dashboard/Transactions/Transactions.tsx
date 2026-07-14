@@ -15,7 +15,7 @@ import { UploadStatementModal } from './components/UploadStatementModal';
 
 export const TransactionsPage = () => {
   const [_search, setSearch] = useState('');
-  const [activeTab, setActiveTab] = useState<'all' | 'categorized' | 'uncategorized'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'categorised' | 'uncategorised'>('all');
   const [page, setPage] = useState(1);
   const [isLogModalOpen, setLogModalOpen] = useState(false);
   const [isFilterOpen, setFilterOpen] = useState(false);
@@ -87,10 +87,11 @@ export const TransactionsPage = () => {
         <button className="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
           <CloseCircle size="20" />
         </button>
-        <h4 className="font-bold text-slate-900 mb-2">How to log / categorize your transactions</h4>
+        <h4 className="font-bold text-slate-900 mb-2">How to log / categorise your transactions</h4>
         <ol className="text-sm text-slate-600 space-y-1 list-decimal ml-4">
-          <li>Click on the ....................</li>
-          <li>....................................</li>
+          <li>Your transactions come in automatically, you can also manually log your cash transactions in the button on the top right.</li>
+          <li>Tell us what each transaction was for, you can also autofill with AI.</li>
+          <li>Generate your ready financial reports.</li>
         </ol>
         <p className="text-xs text-slate-500 mt-3">
           Still confused? <span className="text-brand-blue font-bold cursor-pointer underline">Click HERE</span> to watch a demonstration video.
@@ -128,8 +129,8 @@ export const TransactionsPage = () => {
 
         {/* Tabs */}
         <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 flex gap-1">
-          {['All', 'Categorized', 'Uncategorized'].map((tab) => {
-            const tabValue = tab.toLowerCase() as 'all' | 'categorized' | 'uncategorized';
+          {['All', 'Categorised', 'Uncategorised'].map((tab) => {
+            const tabValue = tab.toLowerCase() as 'all' | 'categorised' | 'uncategorised';
             return (
               <button
                 key={tab}
@@ -139,7 +140,7 @@ export const TransactionsPage = () => {
                   setQueryParams(prev => ({
                     ...prev,
                     page: 1, // Always reset to page 1 when switching tabs
-                    isCategorised: tabValue === 'all' ? undefined : tabValue === 'categorized'
+                    isCategorised: tabValue === 'all' ? undefined : tabValue === 'categorised'
                   }));
                 }}
                 className={`px-4 py-1.5 rounded-md text-xs font-bold transition-colors ${activeTab === tabValue ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
@@ -206,7 +207,7 @@ export const TransactionsPage = () => {
                     {tx.category}
                   </span>
                 ) : (
-                  <p className="text-slate-400 italic text-xs">Uncategorized</p>
+                  <p className="text-slate-400 italic text-xs">Uncategorised</p>
                 )}
               </div>
 

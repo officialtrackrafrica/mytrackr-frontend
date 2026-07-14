@@ -8,10 +8,10 @@ import type { ColumnDef } from '../../../../components/ui/table';
 import { useRetroactiveAiSync, useTransactionCategories } from '../../../../hooks/useTransactions';
 import { Dropdown } from '../../../../components/ui/Dropdown';
 import { AiCategoryDropdown } from './AiCategoryDropdown';
+import { useNavigate } from 'react-router-dom';
 
 interface TransactionsTableProps {
   data: any[];
-  onAddBank?: () => void;
   onUpdateTransaction?: (id: string, updates: { categoryId?: string; subCategoryId?: string | null }) => void;
   onEdit?: (item: any) => void;
   onDelete?: (item: any) => void;
@@ -19,11 +19,11 @@ interface TransactionsTableProps {
 
 export const TransactionsTable = ({
   data,
-  onAddBank,
   onUpdateTransaction,
   onEdit,
   onDelete
 }: TransactionsTableProps) => {
+  const navigate = useNavigate()
   const [selectedTransactions, setSelectedTransactions] = useState<(string | number)[]>([]);
   const { data: categories, isLoading: loadingCategories } = useTransactionCategories();
   const { mutate: runAiSync, isPending: isSyncingAi } = useRetroactiveAiSync();
@@ -51,7 +51,7 @@ export const TransactionsTable = ({
         </p>
 
         <Button
-          onClick={onAddBank}
+          onClick={() => navigate('/link-bank')}
           className="w-auto py-2.5 px-6 bg-brand-blue text-white flex items-center gap-2 text-sm font-semibold rounded-xl shadow-sm hover:bg-blue-700 transition-all"
         >
           <Add size="18" /> Add bank
@@ -187,7 +187,7 @@ export const TransactionsTable = ({
           isLoading={isSyncingAi} // Shows a spinner while the AI is thinking
           className="bg-brand-blue text-white text-xs font-semibold py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition-all w-fit"
         >
-          <Magicpen size="16" variant="Bold" />
+          <Magicpen size="16" variant="Bold" color='white'/>
           {isSyncingAi ? 'Running Prediction...' : 'Auto-categorise all with AI'}
         </Button>
       </div>

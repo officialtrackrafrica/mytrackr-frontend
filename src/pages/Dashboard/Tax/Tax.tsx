@@ -54,13 +54,13 @@ export const TaxCalculatorPage = () => {
       subtitle="Input deductions to accurately forecast corporate and individual tax liabilities."
     >
       <form onSubmit={handleCalculate} className="space-y-6 mt-4">
-        
+
         {/* 1. Compulsory Year and Action Filter Selection bar */}
         <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <label className="text-sm font-bold text-slate-700 whitespace-nowrap">Tax Year*:</label>
-            <select 
-              value={year} 
+            <select
+              value={year}
               onChange={(e) => setYear(Number(e.target.value))}
               className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 outline-none focus:ring-1 focus:ring-brand-blue"
             >
@@ -69,10 +69,8 @@ export const TaxCalculatorPage = () => {
               ))}
             </select>
           </div>
-          
-          <Button type="submit" disabled={isFetching} className="bg-brand-blue text-xs font-semibold px-6 py-2 w-full sm:w-auto flex items-center justify-center gap-2">
-            <Calculator size="16" /> {isFetching ? "Evaluating..." : "Calculate Estimate"}
-          </Button>
+
+
         </div>
 
         {/* 2. Progressive Tax Band Legend */}
@@ -96,13 +94,14 @@ export const TaxCalculatorPage = () => {
 
         {/* 3. Main Operational Form Sheet layout */}
         <div className="grid grid-cols-1 ">
-          
+   <p className='p-2'>Our Tax Calculator helps you estimate your tax liability based on your business type and total profit. Input deductions that can help reduce your tax burden e.g. HMO, Rent etc. in the spaces provided.
+</p>
           {/* LEFT/MID: Interactive Deductions Grid lists */}
           <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs relative">
             {isFetching && (
               <div className="absolute inset-0 bg-white/50 backdrop-blur-xs flex items-center justify-center z-10 rounded-2xl transition-all" />
             )}
-
+         
             <div className="flex justify-between border-b pb-2 text-sm font-bold text-slate-900">
               <span>Deductions & Allowances</span>
               <span>Amount (₦)</span>
@@ -142,16 +141,28 @@ export const TaxCalculatorPage = () => {
               </div>
             )}
           </div>
-{data && (
-            <div className="animate-in slide-in-from-bottom-4 fade-in duration-500">
-              <TaxCalculationCard 
-                taxData={data} 
-                businessType={businessType || ''} 
+          {data && (
+            <div className="animate-in slide-in-from-bottom-4 fade-in duration-500 mt-4">
+              <TaxCalculationCard
+                taxData={data}
+                businessType={businessType || ''}
               />
             </div>
           )}
+
          
         </div>
+         <div className="flex justify-end w-full h-fit mt-4">
+            <Button
+              type="submit"
+              disabled={isFetching}
+              className="bg-brand-blue text-xs font-semibold px-6 py-2 w-fit flex items-center justify-center gap-2"
+            >
+              <Calculator size="16" color="white" />
+              {isFetching ? "Evaluating..." : "Calculate Estimate"}
+            </Button>
+          </div>
+
 
       </form>
     </DashboardLayout>

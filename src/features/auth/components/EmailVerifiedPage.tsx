@@ -18,7 +18,7 @@ export const EmailVerifiedPage = () => {
         
         <h2 className="text-3xl font-bold text-slate-900">Email verified</h2>
         <p className="text-slate-500 mt-2 mb-8 px-4">
-          Your account has been successfully verified. Click below to log in magically.
+          Your account has been successfully verified. Click below to log in.
         </p>
 
         <div className="w-full space-y-4">

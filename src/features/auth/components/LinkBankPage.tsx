@@ -19,7 +19,7 @@ const { mutate, isPending } = useMonoInitiate();
         
         <h2 className="text-3xl font-bold text-slate-900">Link your bank account</h2>
         <p className="text-slate-500 mt-2 mb-8">
-          Connect your bank account via Mono to automatically sync your transactions and track your spending.
+          Connect your bank account to automatically sync your transactions and track your spending.
         </p>
 
         <div className="w-full space-y-3">

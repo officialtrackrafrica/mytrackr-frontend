@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
 import { Button } from '../../../components/ui/Button';
-import { SearchNormal1, Setting5, Add, Trash, Edit2, DocumentText, More } from 'iconsax-react';
+import { SearchNormal1, Setting5, Add, Trash, Edit2, DocumentText } from 'iconsax-react';
 import { useAssets, useLiabilities, type AssetListItem, type LiabilityListItem } from './api/useAssetsAndLiabilities';
 import { formatCurrency } from '../../../utils/helpers';
 import { cn } from '../../../utils/cn';
 import { AddAssetModal } from './AddAssetModal';
 import { Table, type ColumnDef } from '../../../components/ui/table'; // Imported reusable table
+import { DeleteItemModal, EditItemModal } from './ItemActionModals';
 
 const categoryStyles: Record<string, string> = {
   'Equipments': 'bg-pink-50 text-pink-600',
@@ -22,6 +23,9 @@ export const AssetsLiabilitiesPage = () => {
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
+
+  const [itemToEdit, setItemToEdit] = useState<any | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<any | null>(null);
 
   const { data: assetsData, isLoading: assetsLoading } = useAssets({ page });
   const { data: liabilitiesData, isLoading: liabilitiesLoading } = useLiabilities({ page });
@@ -54,7 +58,7 @@ export const AssetsLiabilitiesPage = () => {
       label: activeTab === 'ASSET' ? 'Category' : 'Liability Type',
       render: (item) => {
         // Fallback safely between the asset category and liability type
-        const typeName = item.category || item.liabilityType || 'Uncategorized';
+        const typeName = item.category || item.liabilityType || 'Uncategorised';
         return (
           <span className={cn("px-2.5 py-0.5 rounded-full text-[11px] font-bold inline-block", categoryStyles[typeName] || "bg-slate-100 text-slate-600")}>
             {typeName}
@@ -65,12 +69,12 @@ export const AssetsLiabilitiesPage = () => {
     {
       key: 'actions',
       label: 'Actions',
-      render: () => (
+      render: (item) => (
         <div className="flex items-center gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
-          <button className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-all">
+          <button onClick={() => setItemToDelete(item)} className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-all">
             <Trash size="16" color='#475467'/>
           </button>
-          <button className="p-1.5 text-slate-400 hover:text-brand-blue hover:bg-blue-50 rounded-md transition-all">
+          <button onClick={() => setItemToEdit(item)} className="p-1.5 text-slate-400 hover:text-brand-blue hover:bg-blue-50 rounded-md transition-all">
             <Edit2 size="16" color='#475467'/>
           </button>
         </div>
@@ -179,7 +183,7 @@ export const AssetsLiabilitiesPage = () => {
             <div className="text-center text-slate-400 text-sm py-4">No items found.</div>
           ) : listItems.map((item: any) => {
             const val = item.currentValue ?? item.amountOwed ?? item.value ?? 0;
-            const typeName = item.category || item.liabilityType || 'Uncategorized';
+            const typeName = item.category || item.liabilityType || 'Uncategorised';
             
             return (
               <div key={item.id} className="border border-slate-200 rounded-xl overflow-hidden flex flex-col text-sm">
@@ -190,9 +194,14 @@ export const AssetsLiabilitiesPage = () => {
                     <p className="text-slate-500 font-medium mb-1">Name</p>
                     <p className="font-bold text-slate-800">{item.name || 'N/A'}</p>
                   </div>
-                  <button className="text-slate-700 p-1 -mr-2 hover:bg-slate-200 rounded-md transition-colors">
-                    <More size="18" variant="Bold" />
-                  </button>
+                 <div className="flex items-center gap-1 -mt-1 -mr-2">
+                    <button onClick={() => setItemToEdit(item)} className="p-2 text-slate-400 hover:text-brand-blue rounded-md transition-colors">
+                      <Edit2 size="16" />
+                    </button>
+                    <button onClick={() => setItemToDelete(item)} className="p-2 text-slate-400 hover:text-red-500 rounded-md transition-colors">
+                      <Trash size="16" />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Row 2: Amount (White Background) */}
@@ -206,14 +215,14 @@ export const AssetsLiabilitiesPage = () => {
                 {/* Row 3: Category (Gray Background) */}
                 <div className="bg-slate-50 px-4 py-3">
                   <p className="text-slate-500 font-medium mb-2">Category</p>
-                  {typeName !== 'Uncategorized' ? (
+                  {typeName !== 'Uncategorised' ? (
                     <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold", categoryStyles[typeName] || "bg-slate-100 text-slate-600")}>
                       {/* 👉 Using bg-current allows the dot to perfectly match the text color of the pill! */}
                       <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80"></span>
                       {typeName}
                     </span>
                   ) : (
-                    <p className="text-slate-400 italic text-xs">Uncategorized</p>
+                    <p className="text-slate-400 italic text-xs">Uncategorised</p>
                   )}
                 </div>
 
@@ -238,6 +247,19 @@ export const AssetsLiabilitiesPage = () => {
       <AddAssetModal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        type={activeTab}
+      />
+      <EditItemModal 
+        isOpen={!!itemToEdit}
+        onClose={() => setItemToEdit(null)}
+        item={itemToEdit}
+        type={activeTab}
+      />
+      
+      <DeleteItemModal 
+        isOpen={!!itemToDelete}
+        onClose={() => setItemToDelete(null)}
+        item={itemToDelete}
         type={activeTab}
       />
     </DashboardLayout>

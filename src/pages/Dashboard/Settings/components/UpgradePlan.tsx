@@ -3,6 +3,8 @@ import { ArrowLeft, TickCircle } from 'iconsax-react';
 import { Button } from '../../../../components/ui/Button';
 import { toast } from 'sonner';
 import { useAvailablePlans, useUpgradePlan } from '../api/useBilling';
+import { useState } from 'react';
+// import { plans } from '../../../../utils/plans';
 
 interface UpgradePlanViewProps {
   onBack: () => void;
@@ -10,9 +12,12 @@ interface UpgradePlanViewProps {
 }
 
 export const UpgradePlanView = ({ onBack, currentPlanId }: UpgradePlanViewProps) => {
-  const { data: plans, isLoading } = useAvailablePlans();
+  const { data: plans } = useAvailablePlans();
   const { mutate: upgradePlan, isPending } = useUpgradePlan();
+  const [loadingPlanSlug, setLoadingPlanSlug] = useState<string | null>(null);
+
 const handleUpgrade = (planSlug: string) => {
+  setLoadingPlanSlug(planSlug);
     upgradePlan(
       { 
         planSlug: planSlug, 
@@ -55,12 +60,9 @@ const handleUpgrade = (planSlug: string) => {
 
       {/* Plans List */}
       <div className="space-y-4">
-        {isLoading ? (
-          <div className="p-8 text-center text-slate-400">Loading available plans...</div>
-        ) : (
-          plans?.map((plan: any) => {
+        {plans?.map((plan: any) => {
             const isCurrent = plan.id === currentPlanId;
-
+const isThisButtonLoading = isPending && loadingPlanSlug === plan.slug;
             return (
               <div 
                 key={plan.id} 
@@ -91,8 +93,13 @@ const handleUpgrade = (planSlug: string) => {
                     disabled={isCurrent || isPending}
                     onClick={() => handleUpgrade(plan.slug)}
                   >
-                    {isCurrent ? "Current Plan" : (isPending ? "Processing..." : "Subscribe now")}
-                  </Button>
+{isCurrent 
+        ? "Current Plan" 
+        : isThisButtonLoading 
+          ? "Processing..." 
+          : "Subscribe now"
+      }
+                        </Button>
                 </div>
 
                 {/* Right Side: Features */}
@@ -104,9 +111,11 @@ const handleUpgrade = (planSlug: string) => {
                     </p>
                   )}
                   <ul className="space-y-3">
-                    {plan.features?.map((feature: string, idx: number) => (
+                    {plan.features
+                    ?.filter((feature: string) => !feature.includes('_'))
+                    ?.map((feature: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2.5 text-sm text-slate-600">
-                        <TickCircle size="18" className="text-brand-blue shrink-0" variant="Bold" />
+                        <TickCircle size="18" color='#135ED6' className="text-brand-blue shrink-0" variant="Bold" />
                         {feature}
                       </li>
                     ))}
@@ -115,7 +124,7 @@ const handleUpgrade = (planSlug: string) => {
               </div>
             );
           })
-        )}
+        }
       </div>
     </div>
   );

@@ -1,41 +1,55 @@
-// src/pages/dashboard/components/support/SupportFAQView.tsx
 import { SearchNormal1, Heart, ArrowSwapHorizontal, CloseSquare, DocumentText, Refresh, Sms } from 'iconsax-react';
 import { Button } from '../../../../components/ui/Button';
+import { CreateTicketDrawer } from './CreateTicketDrawer';
+import { useState } from 'react';
 
 const faqs = [
   {
     icon: Heart,
-    question: "Is there a free trial available?",
-    answer: "Yes, you can try us for free for 30 days. Our friendly team will work with you to get you up and running as soon as possible."
+    question: "Who is MyTrackr for? ",
+    answer: "MyTrackr is built for small business owners, freelancers, online sellers, service providers, and growing businesses that want better visibility into their finances without stress, manual calculation or complicated accounting software. "
   },
   {
     icon: ArrowSwapHorizontal,
-    question: "Can I change my plan later?",
-    answer: "Of course. Our pricing scales with your company. Chat to our friendly team to find a solution that works for you."
+    question: "Is it safe to connect my bank account? ",
+    answer: "Yes. MyTrackr only uses secure, read-only access to transaction data. We do not have access to move money or perform transactions on your account. If you prefer, you can also upload your bank statements manually instead of connecting your account."
   },
   {
     icon: CloseSquare,
-    question: "What is your cancellation policy?",
-    answer: "We understand that things change. You can cancel your plan at any time and we'll refund you the difference already paid."
+    question: "Does MyTrackr work on mobile devices?",
+    answer: "Yes. MyTrackr is very mobile friendly. It works on desktop, tablet, and mobile browsers."
   },
   {
     icon: DocumentText,
-    question: "Can other info be added to an invoice?",
-    answer: "At the moment, the only way to add additional information to invoices is to add the information to the workspace's name."
+    question: "What should I do if my bank is not currently supported?",
+    answer: "We are working to ensure we support all banks. If your bank is not currently supported, you can still use MyTrackr by uploading your bank statements manually or by linking your website if you have one."
   },
   {
     icon: Refresh,
-    question: "How does billing work?",
-    answer: "Plans are per workspace, not per account. You can upgrade one workspace, and still have any number of free workspaces."
+    question: "What makes MyTrackr different from accounting software?",
+    answer: "MyTrackr focuses on simplicity. It helps growing business owners understand their money without the difficulty of traditional accounting tools."
   },
   {
     icon: Sms,
-    question: "How do I change my account email?",
-    answer: "You can change the email address associated with your account by going to untitled.com/account from a laptop or desktop."
-  }
+    question: "Do I need accounting knowledge to use MyTrackr?",
+    answer: "No. MyTrackr was designed for everyday business owners, not accountants. The platform uses simple language and easy-to-understand reports."
+  },
+  {
+    icon: Sms,
+    question: "Can I cancel or change my subscription plan?",
+    answer: "Yes. You can upgrade, downgrade, or cancel your subscription anytime. If you cancel your plan, you’ll continue to have access to MyTrackr until the end of your current billing period."
+  },
+  {
+    icon: Sms,
+    question: "What if I sometimes spend business money personally?",
+    answer: "That’s common for many small business owners. MyTrackr allows you categorise personal withdrawals separately so you can better understand your actual business expenses and profit."
+  },
+
 ];
 
 export const SupportFAQView = () => {
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  
   return (
     <div className="animate-in fade-in duration-300">
       
@@ -82,11 +96,15 @@ export const SupportFAQView = () => {
           <h4 className="text-sm font-bold text-slate-900">Still have questions?</h4>
           <p className="text-sm text-slate-500 mt-1">Can't find the answer you're looking for? Please chat to our friendly team.</p>
         </div>
-        <Button className="bg-brand-blue text-white px-6 py-2 text-sm shrink-0 w-fit">
+        <Button className="bg-brand-blue text-white px-6 py-2 text-sm shrink-0 w-fit" onClick={() => setIsDrawerOpen(true)}>
           Get in touch
         </Button>
       </div>
 
+<CreateTicketDrawer 
+        isOpen={isDrawerOpen} 
+        onClose={() => setIsDrawerOpen(false)} 
+      />
     </div>
   );
 };

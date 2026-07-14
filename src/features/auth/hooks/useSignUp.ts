@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '../../../utils/api';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -18,5 +18,18 @@ export const useSignUp = () => {
     onError: (error: any) => {
       toast.error(error.response?.data?.message || 'Something went wrong');
     },
+  });
+};
+
+export const useCheckGoogleSignup = () => {
+  return useQuery({
+    queryKey: ['googleSignupStatus'],
+    queryFn: async () => {
+      const response = await api.get('/users/me/google-signup');
+      return response.data; 
+      // Assuming it returns something like { isGoogleSignup: true, hasCompletedOnboarding: false }
+    },
+    // Don't refetch on window focus for this specific check to avoid flashing
+    refetchOnWindowFocus: false, 
   });
 };

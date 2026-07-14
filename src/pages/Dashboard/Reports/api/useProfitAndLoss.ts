@@ -11,6 +11,7 @@ interface PLParams {
 export interface PLLineItem {
   label: string; // e.g., "Money from product sales"
   amount: number;
+  subCategory: string;
 }
 
 interface PLCategoryGroup {

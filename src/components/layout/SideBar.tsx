@@ -25,7 +25,7 @@ const navItems = [
       { name: 'Cash Flow Statement', path: '/reports/cash-flow' }
     ]
   },
-  { name: 'Assets & Liabilities', icon: Briefcase, path: '/assets' },
+  { name: 'What You Own & Debts You Owe', icon: Briefcase, path: '/assets' },
   { name: 'Tax Calculator', icon: PercentageSquare, path: '/tax' },
 ];
 

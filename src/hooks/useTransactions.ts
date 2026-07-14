@@ -176,7 +176,7 @@ export const useRetroactiveAiSync = () => {
       return data; // Returns number of transactions updated
     },
     onSuccess: (updatedCount) => {
-      toast.success(`Successfully auto-categorized ${updatedCount} transactions!`);
+      toast.success(`Successfully auto-categorised ${updatedCount} transactions!`);
       // Invalidate transactions so the table instantly refreshes with the new categories
       queryClient.invalidateQueries({ queryKey: ['transactions'] }); 
     },

@@ -1,5 +1,5 @@
 // src/hooks/useUser.ts
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../utils/api';
 
 export interface Business {
@@ -40,5 +40,21 @@ export const useBusinessTypes = () => {
       const { data } = await api.get('/businesses/types'); 
       return data?.data || data || []; 
     },
+  });
+};
+
+export const useUpdateBusinessDetails = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (data: { name: string; businessType: string }) => {
+      const response = await api.patch('/businesses/my-business/business-type', data);
+      return response.data;
+    },
+    onSuccess: () => {
+      // Invalidate the check so the modal disappears, and refresh user/business data
+      queryClient.invalidateQueries({ queryKey: ['googleSignupStatus'] });
+      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+    }
   });
 };

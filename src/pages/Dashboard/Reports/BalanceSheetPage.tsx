@@ -162,12 +162,10 @@ export const BalanceSheetPage = () => {
                     <span>Retained Profits</span>
                     <span className="font-medium text-slate-900">{formatCurrency(data?.equity?.retainedProfits || 0)}</span>
                   </div>
-                  {(data?.equity?.ownerWithdrawals ?? 0) > 0 && (
-                    <div className="flex justify-between items-center px-6 py-3 text-sm text-slate-600 hover:bg-slate-50/40 rounded-lg transition-colors">
+                 <div className="flex justify-between items-center px-6 py-3 text-sm text-slate-600 hover:bg-slate-50/40 rounded-lg transition-colors">
                       <span>Owner Withdrawals</span>
-                      <span className="font-medium text-rose-600">-{formatCurrency(data?.equity.ownerWithdrawals ?? 0)}</span>
+                      <span className="font-medium text-rose-600">{formatCurrency(data?.equity.ownerWithdrawals ?? 0)}</span>
                     </div>
-                  )}
                   <div className="flex justify-between items-center px-4 py-3 text-sm bg-slate-100/80 font-bold text-slate-900 rounded-lg mt-2">
                     <span>Total Owner's Money</span>
                     <span>{formatCurrency(data?.equity?.ownersEquity || 0)}</span>

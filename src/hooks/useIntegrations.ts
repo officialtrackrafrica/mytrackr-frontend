@@ -34,3 +34,24 @@ export const useGetIntegrations = () => {
     },
   });
 };
+
+interface ConnectPaystackPayload {
+  mytrackrApiKey: string;
+  secretKey: string;
+}
+
+export const useConnectPaystack = () => {
+  return useMutation({
+    mutationFn: async ({ mytrackrApiKey, secretKey }: ConnectPaystackPayload) => {
+      const response = await api.post('/integrations/paystack/connect', 
+        { secretKey: secretKey },
+        {
+          headers: {
+            'x-mytrackr-api-key': mytrackrApiKey
+          }
+        }
+      );
+      return response.data;
+    }
+  });
+};

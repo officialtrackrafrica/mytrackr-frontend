@@ -113,3 +113,48 @@ export const useLiabilityTypes = () => {
     staleTime: 1000 * 60 * 30, // Cache for 30 mins
   });
 };
+
+export const useUpdateAsset = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      const response = await api.patch(`/finance/assets/${id}`, data);
+      return response.data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['assets'] }),
+  });
+};
+
+export const useUpdateLiability = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      const response = await api.patch(`/finance/liabilities/${id}`, data);
+      return response.data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['liabilities'] }),
+  });
+};
+
+// --- DELETE HOOKS ---
+export const useDeleteAsset = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await api.delete(`/finance/assets/${id}`);
+      return response.data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['assets'] }),
+  });
+};
+
+export const useDeleteLiability = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await api.delete(`/finance/liabilities/${id}`);
+      return response.data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['liabilities'] }),
+  });
+};

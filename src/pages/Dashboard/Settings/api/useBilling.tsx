@@ -71,3 +71,54 @@ export const usePaymentMethod = () => {
     },
   });
 };
+
+
+interface ChangeCardPayload {
+  authorization: {
+    authorization_code: string;
+    bin: string;
+    last4: string;
+    exp_month: string;
+    exp_year: string;
+    channel: string;
+    card_type: string;
+    bank: string;
+    brand: string;
+    reusable: boolean;
+    country_code: string;
+    signature: string;
+    account_name: string;
+  };
+  customerCode: string;
+}
+
+export const useChangeBillingCard = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (payload: ChangeCardPayload) => {
+      const response = await api.post('/subscriptions/billing-card/change', payload);
+      return response.data;
+    },
+    onSuccess: () => {
+      // Refresh the billing info so the new card instantly appears in the UI
+      queryClient.invalidateQueries({ queryKey: ['billing'] }); 
+      // Add any other query keys that fetch the current payment method
+    }
+  });
+};
+
+export const useCancelSubscription = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const response = await api.post('/subscriptions/cancel');
+      return response.data;
+    },
+    onSuccess: () => {
+      // Force the UI to fetch the updated (now empty/canceled) plan status
+      queryClient.invalidateQueries({ queryKey: ['current-plan'] });
+    }
+  });
+};

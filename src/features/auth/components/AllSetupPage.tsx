@@ -34,7 +34,7 @@ export const AllSetupPage = () => {
 
         <h1 className="text-3xl font-bold text-slate-900 mb-3">You are all setup!</h1>
         <p className="text-slate-500 mb-8 leading-relaxed px-4">
-          Proceed to your dashboard to get onboarded and start enjoy real-time business analytics with MyTrackr!
+          Proceed to your dashboard to start enjoying real time money insights.
         </p>
         
         <Button 

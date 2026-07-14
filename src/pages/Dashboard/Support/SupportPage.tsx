@@ -22,14 +22,14 @@ export const SupportPage = () => {
             className="w-auto py-2 px-4 text-xs font-semibold"
             onClick={() => setActiveView('tickets')}
           >
-            <ReceiptItem size="16" className="mr-2" /> Support tickets
+            <ReceiptItem size="16" className="mr-2" color='black'/> Support tickets
           </Button>
           
           <Button 
             className="w-auto py-2 px-4 bg-brand-blue text-xs font-semibold text-white"
             onClick={() => setIsDrawerOpen(true)}
           >
-            <Add size="16" className="mr-2" /> Create ticket
+            <Add size="16" className="mr-2" color='white'/> Create ticket
           </Button>
         </div>
       }

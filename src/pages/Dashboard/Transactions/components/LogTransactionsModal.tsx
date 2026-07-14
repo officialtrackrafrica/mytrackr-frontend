@@ -76,7 +76,7 @@ const onSubmit = (formData: FormValues) => {
         },
         {
           onSuccess: () => {
-            toast.success("Transaction re-categorized successfully!");
+            toast.success("Transaction re-categorised successfully!");
             onClose();
           },
           onError: () => toast.error("Failed to update transaction changes.")

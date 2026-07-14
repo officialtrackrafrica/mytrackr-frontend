@@ -12,7 +12,7 @@ export const ProfitAndLossPage = () => {
   });
 
   const { data, isLoading, isError } = useProfitAndLoss(dates);
-
+const isProfit = (data?.netProfit || 0) >= 0;
   return (
     <DashboardLayout
       title="Financial Reports"
@@ -47,7 +47,7 @@ export const ProfitAndLossPage = () => {
         <div className="mb-6 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-4 flex items-center gap-3 text-sm">
           <InfoCircle size="20" className="text-amber-600 shrink-0" />
           <div>
-            You have <span className="font-bold">{data.metadata.uncategorisedCount} uncategorized transactions</span> valued at <span className="font-bold">{formatCurrency(data.metadata.uncategorisedValue)}</span> within this period. This will alter the accuracy of your real profit statement.
+            You have <span className="font-bold">{data.metadata.uncategorisedCount} uncategorised transactions</span> valued at <span className="font-bold">{formatCurrency(data.metadata.uncategorisedValue)}</span> within this period. This will alter the accuracy of your real profit statement.
           </div>
         </div>
       )}
@@ -75,7 +75,7 @@ export const ProfitAndLossPage = () => {
               <div className="space-y-0.5">
                 {data?.revenue?.lines.map((line, idx) => (
                   <div key={idx} className="flex justify-between items-center px-6 py-3 text-sm text-slate-600 hover:bg-slate-50/40 rounded-lg">
-                    <span>{line.label}</span>
+                    <span>{line.subCategory}</span>
                     <span className="font-medium text-slate-900">{formatCurrency(line.amount)}</span>
                   </div>
                 ))}
@@ -89,7 +89,7 @@ export const ProfitAndLossPage = () => {
               <div className="space-y-0.5 mt-4">
                 {data?.cogs?.lines.map((line, idx) => (
                   <div key={idx} className="flex justify-between items-center px-6 py-3 text-sm text-slate-600 hover:bg-slate-50/40 rounded-lg">
-                    <span>{line.label}</span>
+                    <span>{line?.subCategory}</span>
                     <span className="font-medium text-slate-900">{formatCurrency(line.amount)}</span>
                   </div>
                 ))}
@@ -117,7 +117,7 @@ export const ProfitAndLossPage = () => {
               <div className="space-y-0.5">
                 {data?.expenses?.operating?.lines.map((line, idx) => (
                   <div key={idx} className="flex justify-between items-center px-6 py-3 text-sm text-slate-600 hover:bg-slate-50/40 rounded-lg">
-                    <span>{line.label}</span>
+                    <span>{line.subCategory}</span>
                     <span className="font-medium text-slate-900">{formatCurrency(line.amount)}</span>
                   </div>
                 ))}
@@ -151,10 +151,17 @@ export const ProfitAndLossPage = () => {
                   <span>Total Other Expenses</span>
                   <span className="text-slate-900">{formatCurrency(data?.expenses?.other?.total || 0)}</span>
                 </div>
-                <div className="flex justify-between items-center px-4 py-3 text-sm bg-slate-900 text-white font-bold rounded-lg mt-4 shadow-sm shadow-slate-900/10">
+                {/* <div className="flex justify-between items-center px-4 py-3 text-sm bg-slate-900 text-white font-bold rounded-lg mt-4 shadow-sm shadow-slate-900/10">
                   <span>Net/Real Profit ({data?.netProfitMargin || 0}%)</span>
                   <span>{formatCurrency(data?.netProfit || 0)}</span>
-                </div>
+                </div> */}
+
+  <div className={`flex justify-between items-center px-4 py-3 text-sm font-bold text-white rounded-lg mt-4 shadow-sm shadow-slate-900/10 ${isProfit ? 'bg-green-600' : 'bg-red-600'}`}>
+    <span>
+      {isProfit ? 'Net/Real Profit' : 'Net/Real Loss'} ({data?.netProfitMargin || 0}%)
+    </span>
+    <span>{formatCurrency(data?.netProfit || 0)}</span>
+  </div>
               </div>
             </div>
 

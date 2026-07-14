@@ -100,7 +100,7 @@ export const UploadStatementModal = ({ isOpen, onClose }: UploadStatementModalPr
             disabled={isPending}
           />
           <div>
-            <p className="text-sm font-bold text-slate-900">Auto-categorize transactions</p>
+            <p className="text-sm font-bold text-slate-900">Auto-categorise transactions</p>
             <p className="text-xs text-slate-500">Let our AI automatically sort your transactions into categories.</p>
           </div>
         </label>
