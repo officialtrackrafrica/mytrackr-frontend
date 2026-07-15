@@ -1,10 +1,11 @@
-// src/pages/dashboard/CashflowPage.tsx
 import { useState } from 'react';
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
-import { Calendar, InfoCircle, ArrowUp, ArrowDown, Warning2 } from 'iconsax-react';
-import { useCashflow } from './api/useCashflow';
+import { Calendar, InfoCircle, ArrowUp, ArrowDown, Warning2, DocumentText } from 'iconsax-react';
+import { useCashflow, useDownloadCashflowReport } from './api/useCashflow';
 import { formatCurrency } from '../../../utils/helpers';
 import { cn } from '../../../utils/cn';
+import { toast } from 'sonner';
+import { Button } from '../../../components/ui/Button';
 
 interface MetricCardProps {
   title: string;
@@ -48,12 +49,31 @@ export const CashflowPage = () => {
   });
 
   const { data, isLoading, isError } = useCashflow(dates);
-console.log(data)
+const { mutate: downloadReport, isPending: isDownloading } = useDownloadCashflowReport();
 
+  const handleGenerateReport = () => {
+    downloadReport(dates, {
+      onSuccess: () => toast.success('Cashflow report downloaded successfully!'),
+      onError: () => toast.error('Failed to generate report. Please try again.')
+    });
+  };
   return (
     <DashboardLayout
       title="Cashflow"
       subtitle="Cashflow Statement Overview"
+      extra={
+        <Button 
+          className="w-auto py-2 bg-brand-blue" 
+          onClick={handleGenerateReport}
+          disabled={isDownloading || isLoading || isError}
+        >
+          <div className="flex items-center gap-2 text-white">
+            {isDownloading && <div className="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin" />}
+            <DocumentText size="18" color="#fff" /> 
+            {isDownloading ? 'Generating...' : 'Download report'}
+          </div>
+        </Button>
+      }
     >
       {/* 1. Date Range Section */}
       <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

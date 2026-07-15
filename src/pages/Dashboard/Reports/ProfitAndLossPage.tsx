@@ -1,9 +1,11 @@
 // src/pages/dashboard/ProfitAndLossPage.tsx
 import { useState } from 'react';
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
-import { Calendar, InfoCircle } from 'iconsax-react';
-import { useProfitAndLoss } from './api/useProfitAndLoss';
+import { Calendar, DocumentText, InfoCircle } from 'iconsax-react';
+import { useDownloadPnLReport, useProfitAndLoss } from './api/useProfitAndLoss';
 import { formatCurrency } from '../../../utils/helpers';
+import { toast } from 'sonner';
+import { Button } from '../../../components/ui/Button';
 
 export const ProfitAndLossPage = () => {
   const [dates, setDates] = useState({
@@ -13,10 +15,31 @@ export const ProfitAndLossPage = () => {
 
   const { data, isLoading, isError } = useProfitAndLoss(dates);
 const isProfit = (data?.netProfit || 0) >= 0;
+const { mutate: downloadReport, isPending: isDownloading } = useDownloadPnLReport();
+
+  const handleGenerateReport = () => {
+    downloadReport(dates, {
+      onSuccess: () => toast.success('P&L report downloaded successfully!'),
+      onError: () => toast.error('Failed to generate report. Please try again.')
+    });
+  };
   return (
     <DashboardLayout
       title="Financial Reports"
       subtitle="Profit and Loss Statement Overview"
+      extra={
+        <Button 
+          className="w-auto py-2 bg-brand-blue" 
+          onClick={handleGenerateReport}
+          disabled={isDownloading || isLoading || isError}
+        >
+          <div className="flex items-center gap-2 text-white">
+            {isDownloading && <div className="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin" />}
+            <DocumentText size="18" color="#fff" /> 
+            {isDownloading ? 'Generating...' : 'Download report'}
+          </div>
+        </Button>
+      }
     >
       {/* 1. Date Range Filter controls */}
       <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

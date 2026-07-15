@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
 import { Button } from '../../../components/ui/Button';
 import { SearchNormal1, Setting5, DocumentText, Add, CloseCircle, DocumentUpload, More } from 'iconsax-react';
-import { useTransactions, useUpdateTransactionCategory } from '../../../hooks/useTransactions';
+import { useDownloadTransactionReport, useTransactions, useUpdateTransactionCategory } from '../../../hooks/useTransactions';
 import { TransactionsTable } from './components/TransactionTable';
 import { formatCurrency } from '../../../utils/helpers';
 import { LogTransactionModal } from './components/LogTransactionsModal';
@@ -40,11 +40,34 @@ export const TransactionsPage = () => {
   const transactionsList = data?.data || [];
   const totalCount = data?.meta?.total || 0;
   // const totalPages = data?.meta?.totalPages || 1;
-  console.log(data)
   // 2. Initialize the new update hook
   const { mutate: updateCategory } = useUpdateTransactionCategory();
 
-  // 3. Create the handler function
+  const { mutate: downloadReport, isPending: isDownloading } = useDownloadTransactionReport();
+
+  const handleGenerateReport = () => {
+    // Gather all current filters
+    const rawFilters = { ...queryParams, search: _search };
+    
+    // Clean the payload: remove empty strings, empty arrays, and undefined values
+    const cleanFilters = Object.fromEntries(
+      Object.entries(rawFilters).filter(([_, value]) => {
+        // Keep booleans (like isCategorised: false)
+        if (typeof value === 'boolean') return true;
+        // Remove empty arrays
+        if (Array.isArray(value)) return value.length > 0;
+        // Remove empty strings, null, or undefined
+        if (value === '' || value === null || value === undefined) return false;
+        
+        return true;
+      })
+    );
+
+    downloadReport(cleanFilters, {
+      onSuccess: () => toast.success('Report downloaded successfully!'),
+      onError: () => toast.error('Failed to generate report. Please try again.')
+    });
+  };
   const handleUpdateTransaction = (id: string, updates: { categoryId?: string; subCategoryId?: string | null }) => {
     // Fire the mutation request to the backend
     updateCategory(
@@ -73,10 +96,11 @@ export const TransactionsPage = () => {
           <Button variant="outline" className="flex w-auto py-2" onClick={() => setLogModalOpen(true)}>
             <Add size="18" color='#050E1E' /> Log transactions
           </Button>
-          <Button className="w-auto py-2 bg-brand-blue">
+          <Button className="w-auto py-2 bg-brand-blue" onClick={handleGenerateReport}
+            disabled={isDownloading}>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin hidden" />
-              <DocumentText size="18" color='#fff' /> Generate report
+              {isDownloading && <div className="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin" />}
+              <DocumentText size="18" color='#fff' /> {isDownloading ? 'Generating...' : 'Generate report'}
             </div>
           </Button>
         </div>
@@ -121,8 +145,13 @@ export const TransactionsPage = () => {
             <Button variant="outline" className="w-auto py-2 text-xs" onClick={() => setFilterOpen(true)}>
               <Setting5 size="16" color='#475467' /> Sort & Filter
             </Button>
-            <Button variant="outline" className="w-auto py-2 text-xs hidden sm:flex">
-              View report
+           <Button 
+              variant="outline" 
+              className="w-auto py-2 text-xs hidden sm:flex"
+              onClick={handleGenerateReport}
+              disabled={isDownloading}
+            >
+              {isDownloading ? 'Generating...' : 'View report'}
             </Button>
           </div>
         </div>

@@ -2,11 +2,12 @@
 import { useState } from 'react';
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
 import { Button } from '../../../components/ui/Button';
-import { useTaxCalculatorEstimate } from './api/useTaxCalculator';
+import { useDownloadTaxReport, useTaxCalculatorEstimate } from './api/useTaxCalculator';
 import { formatCurrency } from '../../../utils/helpers';
-import { CloseCircle, Calculator } from 'iconsax-react';
+import { CloseCircle, Calculator, DocumentText } from 'iconsax-react';
 import { useUser } from '../../../hooks/useUser';
 import { TaxCalculationCard } from './components/TaxCalculationCard';
+import { toast } from 'sonner';
 
 export const TaxCalculatorPage = () => {
   const [showBrackets, setShowBrackets] = useState(true);
@@ -34,8 +35,18 @@ export const TaxCalculatorPage = () => {
     extra: Number(inputs.extra) || 0,
   };
 
-  // 2. Feed current config state to lazy query instance
   const { data, refetch, isFetching } = useTaxCalculatorEstimate(queryParams);
+  const { mutate: downloadReport, isPending: isDownloading } = useDownloadTaxReport();
+
+  const handleGenerateReport = () => {
+    downloadReport({
+      year: Number(year),
+      deductions: data?.deductions?.total || 0, // Using the total calculated by the backend
+    }, {
+      onSuccess: () => toast.success('Tax estimate report downloaded successfully!'),
+      onError: () => toast.error('Failed to generate report. Please try again.')
+    });
+  };
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,6 +63,19 @@ export const TaxCalculatorPage = () => {
     <DashboardLayout
       title="Tax Calculator"
       subtitle="Input deductions to accurately forecast corporate and individual tax liabilities."
+      extra={
+        <Button 
+          className="w-auto py-2 bg-brand-blue" 
+          onClick={handleGenerateReport}
+          disabled={isDownloading || isFetching || !data}
+        >
+          <div className="flex items-center gap-2 text-white">
+            {isDownloading && <div className="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin" />}
+            <DocumentText size="18" color="#fff" /> 
+            {isDownloading ? 'Generating...' : 'Download report'}
+          </div>
+        </Button>
+      }
     >
       <form onSubmit={handleCalculate} className="space-y-6 mt-4">
 

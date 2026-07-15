@@ -20,3 +20,12 @@ export const useVerifyOTP = () => {
     },
   });
 };
+
+export const useResendOTP = () => {
+  return useMutation({
+    mutationFn: async (email: string) => {
+      const response = await api.post('/auth/resend-otp', { email });
+      return response.data;
+    }
+  });
+};

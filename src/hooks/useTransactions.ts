@@ -196,3 +196,29 @@ export const useCategorySuggestions = () => {
     }
   });
 };
+
+export const useDownloadTransactionReport = () => {
+  return useMutation({
+    mutationFn: async (params: any) => {
+      const response = await api.get('/finance/transactions/report.pdf', {
+        params,
+        responseType: 'blob', // Crucial for handling file downloads
+      });
+
+      // Create a temporary URL for the Blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      
+      // Create a hidden link and trigger the download
+      const link = document.createElement('a');
+      link.href = url;
+      // You can make the filename dynamic based on the date
+      link.setAttribute('download', `MyTrackr_Transactions_${new Date().toISOString().split('T')[0]}.pdf`); 
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    }
+  });
+};

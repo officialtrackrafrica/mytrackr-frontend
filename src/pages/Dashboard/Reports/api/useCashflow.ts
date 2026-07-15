@@ -1,5 +1,5 @@
 // src/hooks/useCashflow.ts
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '../../../../utils/api';
 
 export interface CashflowMetric {
@@ -39,5 +39,30 @@ export const useCashflow = (params: CashflowParams) => {
       return data;
     },
     staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const useDownloadCashflowReport = () => {
+  return useMutation({
+    mutationFn: async (params: { startDate: string, endDate: string }) => {
+      const response = await api.get('/reports/cash-flow/export.pdf', {
+        params,
+        responseType: 'blob', // Crucial for handling file downloads
+      });
+
+      // Create a temporary URL for the Blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      
+      // Create a hidden link and trigger the download
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `MyTrackr_Cashflow_${params.startDate}_to_${params.endDate}.pdf`); 
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    }
   });
 };

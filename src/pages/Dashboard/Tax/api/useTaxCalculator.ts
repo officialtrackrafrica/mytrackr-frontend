@@ -72,7 +72,7 @@
 // };
 
 // src/pages/dashboard/api/useTaxCalculator.ts
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '../../../../utils/api';
 
 export interface TaxEstimateParams {
@@ -152,5 +152,30 @@ export const useTaxCalculatorEstimate = (params: TaxEstimateParams) => {
     },
     enabled: false, 
     staleTime: 0,   
+  });
+};
+
+export const useDownloadTaxReport = () => {
+  return useMutation({
+    mutationFn: async (params: { year: number; deductions?: number }) => {
+      const response = await api.get('/tax/estimate/report.pdf', {
+        params,
+        responseType: 'blob', // Crucial for handling file downloads
+      });
+
+      // Create a temporary URL for the Blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      
+      // Create a hidden link and trigger the download
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `MyTrackr_Tax_Estimate_${params.year}.pdf`); 
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    }
   });
 };
