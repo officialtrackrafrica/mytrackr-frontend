@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
 import { Button } from '../../../components/ui/Button';
-import { SearchNormal1, Setting5, DocumentText, Add, CloseCircle, DocumentUpload, More } from 'iconsax-react';
+import { SearchNormal1, Setting5, DocumentText, Add, CloseCircle, DocumentUpload, More, Edit2, Trash } from 'iconsax-react';
 import { useDownloadTransactionReport, useTransactions, useUpdateTransactionCategory } from '../../../hooks/useTransactions';
 import { TransactionsTable } from './components/TransactionTable';
 import { formatCurrency } from '../../../utils/helpers';
@@ -215,9 +215,25 @@ const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
                   <p className="text-slate-500 font-medium mb-1">Name</p>
                   <p className="font-bold text-slate-800">{tx.name || 'N/A'}</p>
                 </div>
-                <button className="text-slate-700 p-1 -mr-2 hover:bg-slate-200 rounded-md transition-colors bg-red-500">
-                  <More size="18" variant="Bold" color='#gggggg' />
-                </button>
+               <div className="">
+                  <button
+                   onClick={() => {
+                      setTransactionToEdit(tx);
+                      setLogModalOpen(true);
+                    }}
+                    className="text-slate-500 p-2 hover:bg-blue-100 hover:text-brand-blue rounded-md transition-colors"
+                    aria-label="Edit transaction"
+                  >
+                    <Edit2 size="18" variant="Outline" color='#121212'/>
+                  </button>
+                  <button
+                    onClick={() => setTransactionToDelete(tx)}
+                    className="text-slate-500 p-2 hover:bg-red-100 hover:text-red-600 rounded-md transition-colors"
+                    aria-label="Delete transaction"
+                  >
+                    <Trash size="18" variant="Outline" color='#EF4444' />
+                  </button>
+                </div>
               </div>
 
               {/* Row 2: Description (White Background) */}

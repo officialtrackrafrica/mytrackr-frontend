@@ -196,10 +196,10 @@ export const AssetsLiabilitiesPage = () => {
                   </div>
                  <div className="flex items-center gap-1 -mt-1 -mr-2">
                     <button onClick={() => setItemToEdit(item)} className="p-2 text-slate-400 hover:text-brand-blue rounded-md transition-colors">
-                      <Edit2 size="16" />
+                      <Edit2 size="16" color='#121212'/>
                     </button>
                     <button onClick={() => setItemToDelete(item)} className="p-2 text-slate-400 hover:text-red-500 rounded-md transition-colors">
-                      <Trash size="16" />
+                      <Trash size="16" color='#EF4444'/>
                     </button>
                   </div>
                 </div>

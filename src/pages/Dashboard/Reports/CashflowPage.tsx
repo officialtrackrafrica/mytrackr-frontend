@@ -48,7 +48,7 @@ export const CashflowPage = () => {
     endDate: '2026-12-31'
   });
 
-  const { data, isLoading, isError } = useCashflow(dates);
+  const { data, isLoading, isError, error } = useCashflow(dates);
 const { mutate: downloadReport, isPending: isDownloading } = useDownloadCashflowReport();
 const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
  const handleGenerateReport = (format: 'pdf' | 'csv') => {
@@ -135,8 +135,8 @@ const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
             <div className="w-8 h-8 border-4 border-brand-blue border-t-transparent rounded-full animate-spin" />
           </div>
         ) : isError ? (
-          <div className="py-12 bg-white rounded-2xl border text-center text-sm text-red-500 font-medium">
-            Failed to process cashflow tracking summaries.
+          <div className="py-12 bg-white rounded-2xl text-center text-sm text-red-500 font-medium">
+             {(error as any)?.response?.data?.message || (error as any)?.message || "Failed to process Balance Sheet datasets."}
           </div>
         ) : (
           <>

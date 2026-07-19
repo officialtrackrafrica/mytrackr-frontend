@@ -51,13 +51,13 @@ export interface BalanceSheetResponse {
   };
 }
 
-export const useBalanceSheet = (params: BSParams) => {
-  return useQuery<BalanceSheetResponse>({
-    queryKey: ['balance-sheet', params],
-    queryFn: async () => {
-      const { data } = await api.get('/reports/balance-sheet', { params });
-      return data;
-    },
-    staleTime: 1000 * 60 * 5,
-  });
-};
+  export const useBalanceSheet = (params: BSParams) => {
+    return useQuery<BalanceSheetResponse>({
+      queryKey: ['balance-sheet', params],
+      queryFn: async () => {
+        const { data } = await api.get('/reports/balance-sheet', { params });
+        return data;
+      },
+      staleTime: 1000 * 60 * 5,
+    });
+  };

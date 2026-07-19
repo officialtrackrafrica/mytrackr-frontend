@@ -185,7 +185,7 @@ export const TransactionsTable = ({
         <Button
           onClick={() => runAiSync()}
           isLoading={isSyncingAi} // Shows a spinner while the AI is thinking
-          className="bg-brand-blue text-white text-xs font-semibold py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition-all w-fit"
+          className="text-white text-xs font-semibold py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition-all w-fit"
         >
           <Magicpen size="16" variant="Bold" color='white'/>
           {isSyncingAi ? 'Running Prediction...' : 'Auto-categorise all with AI'}
@@ -228,13 +228,23 @@ export const TransactionsTable = ({
                   <p className="text-slate-500 font-medium mb-1">Name</p>
                   <p className="font-bold text-slate-800">{tx.name || 'N/A'}</p>
                 </div>
-                {/* Wired the More button to the onEdit handler for mobile */}
-                <button
-                  onClick={() => onEdit?.(tx)}
-                  className="text-slate-700 p-1 -mr-2 hover:bg-slate-200 rounded-md transition-colors"
-                >
-                  <More size="18" variant="Bold" />
-                </button>
+                {/*  Action Buttons: Edit and Delete */}
+                <div className="flex items-center gap-1 -mr-2">
+                  <button
+                    onClick={() => onEdit?.(tx)}
+                    className="text-slate-500 p-2 hover:bg-blue-100 hover:text-brand-blue rounded-md transition-colors"
+                    aria-label="Edit transaction"
+                  >
+                    <Edit2 size="18" variant="Bold" />
+                  </button>
+                  <button
+                    onClick={() => onDelete?.(tx)}
+                    className="text-slate-500 p-2 hover:bg-red-100 hover:text-red-600 rounded-md transition-colors"
+                    aria-label="Delete transaction"
+                  >
+                    <Trash size="18" variant="Bold" />
+                  </button>
+                </div>
               </div>
 
               {/* Row 2: Description (White Background) */}

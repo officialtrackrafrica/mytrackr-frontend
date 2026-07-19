@@ -58,7 +58,7 @@ const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
   return (
     <DashboardLayout
     extra={
-      <div className="flex justify-end mb-6 gap-2">
+      <div className="flex flex-wrap mb-6 gap-2">
                   <Button variant="primary" className="flex w-auto py-2" onClick={() => setUploadModalOpen(true)}>
                     <DocumentUpload size="18" color='white' /> Upload statement
                   </Button>
@@ -142,11 +142,11 @@ const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
 
                 {/* Segmented Doughnut Placeholder */}
                 <div className="relative w-24 h-24 shrink-0">
-                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                    <circle cx="18" cy="18" r="14" fill="transparent" stroke="#F1F5F9" strokeWidth="8" strokeDasharray="20 80" strokeDashoffset="0" />
-                    <circle cx="18" cy="18" r="14" fill="transparent" stroke="#CBD5E1" strokeWidth="8" strokeDasharray="20 80" strokeDashoffset="-22" />
-                    <circle cx="18" cy="18" r="14" fill="transparent" stroke="#94A3B8" strokeWidth="8" strokeDasharray="20 80" strokeDashoffset="-44" />
-                    <circle cx="18" cy="18" r="14" fill="transparent" stroke="#64748B" strokeWidth="8" strokeDasharray="20 80" strokeDashoffset="-66" />
+                  <svg className="w-full h-full transform -rotate-90 text-brand-blue" viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="14" fill="transparent" stroke="currentColor" strokeWidth="8" strokeDasharray="20 80" strokeDashoffset="0" />
+                    <circle cx="18" cy="18" r="14" fill="transparent" stroke="currentColor" strokeWidth="8" strokeDasharray="20 80" strokeDashoffset="-22" />
+                    <circle cx="18" cy="18" r="14" fill="transparent" stroke="currentColor" strokeWidth="8" strokeDasharray="20 80" strokeDashoffset="-44" />
+                    <circle cx="18" cy="18" r="14" fill="transparent" stroke="currentColor" strokeWidth="8" strokeDasharray="20 80" strokeDashoffset="-66" />
                   </svg>
                 </div>
 
@@ -294,7 +294,7 @@ const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
       <div className="p-6 border border-slate-100 rounded-2xl bg-white shadow-sm">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-lg">Recent transactions</h3>
-          <Button onClick={() => navigate('/transactions')} className="text-white text-sm font-bold hover:underline w-fit">View all</Button>
+          <Button onClick={() => navigate('/transactions')} variant='primary' title="Go to full transactions list" className="text-white text-sm w-fit py-1">View all</Button>
         </div>
         <TransactionsTable data={transactions || []} />
       </div>

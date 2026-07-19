@@ -13,7 +13,7 @@ export const ProfitAndLossPage = () => {
     endDate: '2026-12-31'
   });
 const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
-  const { data, isLoading, isError } = useProfitAndLoss(dates);
+  const { data, isLoading, isError, error } = useProfitAndLoss(dates);
 const isProfit = (data?.netProfit || 0) >= 0;
 const { mutate: downloadReport, isPending: isDownloading } = useDownloadPnLReport();
 
@@ -102,7 +102,7 @@ const handleGenerateReport = (format: 'pdf' | 'csv') => {
           </div>
         ) : isError ? (
           <div className="py-12 text-center text-sm text-red-500 font-medium">
-            Failed to parse statement payload definitions.
+             {(error as any)?.response?.data?.message || (error as any)?.message || "Failed to process Balance Sheet datasets."}
           </div>
         ) : (
           <div className="space-y-8">

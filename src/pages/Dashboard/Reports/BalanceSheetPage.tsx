@@ -11,9 +11,7 @@ export const BalanceSheetPage = () => {
     endDate: '2026-12-31'
   });
 
-  const { data, isLoading, isError } = useBalanceSheet(dates);
-  console.log(data)
-
+  const { data, isLoading, isError, error } = useBalanceSheet(dates);
   return (
     <DashboardLayout
       title="Balance Sheet"
@@ -61,7 +59,7 @@ export const BalanceSheetPage = () => {
           </div>
         ) : isError ? (
           <div className="py-12 bg-white rounded-2xl border border-slate-200 text-center text-sm text-red-500 font-medium">
-            Failed to process Balance Sheet datasets.
+            {(error as any)?.response?.data?.message || (error as any)?.message || "Failed to process Balance Sheet datasets."}
           </div>
         ) : (
           <>
