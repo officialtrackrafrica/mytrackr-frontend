@@ -4,7 +4,7 @@ import { DashboardLayout } from '../../../components/layout/DashboardLayout';
 import { Button } from '../../../components/ui/Button';
 import { useDownloadTaxReport, useTaxCalculatorEstimate } from './api/useTaxCalculator';
 import { formatCurrency } from '../../../utils/helpers';
-import { CloseCircle, Calculator, DocumentText } from 'iconsax-react';
+import { CloseCircle, Calculator, DocumentText, ArrowDown2 } from 'iconsax-react';
 import { useUser } from '../../../hooks/useUser';
 import { TaxCalculationCard } from './components/TaxCalculationCard';
 import { toast } from 'sonner';
@@ -23,7 +23,7 @@ export const TaxCalculatorPage = () => {
     rent: '',
     extra: '',
   });
-
+const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   // 1. Unpack data payload params into flat contract parameters for the GET serializer
   const queryParams = {
     year: Number(year),
@@ -38,12 +38,15 @@ export const TaxCalculatorPage = () => {
   const { data, refetch, isFetching } = useTaxCalculatorEstimate(queryParams);
   const { mutate: downloadReport, isPending: isDownloading } = useDownloadTaxReport();
 
-  const handleGenerateReport = () => {
+  const handleGenerateReport = (format: 'pdf' | 'csv') => {
+    setIsExportMenuOpen(false); // Close dropdown menu
+    
     downloadReport({
       year: Number(year),
-      deductions: data?.deductions?.total || 0, // Using the total calculated by the backend
+      deductions: data?.deductions?.total || 0, 
+      format, // 👉 Pass format to the hook
     }, {
-      onSuccess: () => toast.success('Tax estimate report downloaded successfully!'),
+      onSuccess: () => toast.success(`Tax estimate report (${format.toUpperCase()}) downloaded successfully!`),
       onError: () => toast.error('Failed to generate report. Please try again.')
     });
   };
@@ -64,17 +67,34 @@ export const TaxCalculatorPage = () => {
       title="Tax Calculator"
       subtitle="Input deductions to accurately forecast corporate and individual tax liabilities."
       extra={
-        <Button 
-          className="w-auto py-2 bg-brand-blue" 
-          onClick={handleGenerateReport}
-          disabled={isDownloading || isFetching || !data}
-        >
-          <div className="flex items-center gap-2 text-white">
-            {isDownloading && <div className="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin" />}
-            <DocumentText size="18" color="#fff" /> 
-            {isDownloading ? 'Generating...' : 'Download report'}
-          </div>
-        </Button>
+        <div className="relative">
+          <Button 
+            className="w-auto py-2 bg-brand-blue" 
+            onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
+            disabled={isDownloading || isFetching || !data}
+          >
+            <div className="flex items-center gap-2 text-white">
+              {isDownloading && <div className="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin" />}
+              <DocumentText size="18" color="#fff" /> 
+              {isDownloading ? 'Generating...' : 'Export'}
+              {!isDownloading && <ArrowDown2 size="16" color="#fff" />}
+            </div>
+          </Button>
+
+          {isExportMenuOpen && !isDownloading && !isFetching && data && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setIsExportMenuOpen(false)}></div>
+              <div className="absolute right-0 mt-2 w-40 bg-white border border-slate-200 shadow-lg rounded-xl flex flex-col overflow-hidden z-50 py-1 animate-in fade-in slide-in-from-top-2">
+                <button onClick={() => handleGenerateReport('pdf')} className="px-4 py-2.5 text-sm font-medium text-slate-700 text-left hover:bg-slate-50 transition-colors">
+                  Export as PDF
+                </button>
+                <button onClick={() => handleGenerateReport('csv')} className="px-4 py-2.5 text-sm font-medium text-slate-700 text-left hover:bg-slate-50 transition-colors">
+                  Export as CSV
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       }
     >
       <form onSubmit={handleCalculate} className="space-y-6 mt-4">

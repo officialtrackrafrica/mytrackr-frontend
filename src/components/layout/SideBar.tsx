@@ -20,12 +20,12 @@ const navItems = [
     icon: Chart2, 
     path: '/reports',
     subItems: [
-      { name: 'Profit and Loss', path: '/reports/profit-and-loss' },
-      { name: 'Balance Sheet', path: '/reports/balance-sheet' },
+      { name: 'Profit and Loss Statement', path: '/reports/profit-and-loss' },
+      { name: 'Balance Sheet Statement', path: '/reports/balance-sheet' },
       { name: 'Cash Flow Statement', path: '/reports/cash-flow' }
     ]
   },
-  { name: 'What You Own & Debts You Owe', icon: Briefcase, path: '/assets' },
+  { name: 'What You Own & Debt You Owe', icon: Briefcase, path: '/assets' },
   { name: 'Tax Calculator', icon: PercentageSquare, path: '/tax' },
 ];
 

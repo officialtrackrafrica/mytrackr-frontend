@@ -179,17 +179,17 @@ export const LinkWebsiteForm = ({ onClose }: { onClose?: () => void }) => {
       
       {/* Tabs */}
       <div className="flex bg-slate-100 p-1 rounded-lg mb-6">
+<button
+          onClick={() => setActiveTab('gateway')}
+          className={`flex-1 text-sm font-medium py-2 rounded-md transition-all duration-200 ${activeTab === 'gateway' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+        >
+          Payment Gateway
+        </button>
         <button
           onClick={() => setActiveTab('website')}
           className={`flex-1 text-sm font-medium py-2 rounded-md transition-all duration-200 ${activeTab === 'website' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
         >
           Link Website
-        </button>
-        <button
-          onClick={() => setActiveTab('gateway')}
-          className={`flex-1 text-sm font-medium py-2 rounded-md transition-all duration-200 ${activeTab === 'gateway' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
-        >
-          Payment Gateway
         </button>
       </div>
 

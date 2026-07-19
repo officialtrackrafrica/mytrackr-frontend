@@ -85,7 +85,7 @@ const isThisButtonLoading = isPending && loadingPlanSlug === plan.slug;
                       <span className="text-4xl font-black text-slate-900 tracking-tight">₦{plan.price}</span>
                       <span className="text-sm text-slate-500 font-medium pb-1">per month</span>
                     </div>
-                    <p className="text-xs text-slate-500">{plan.description || `Basic features for up to 10 users.`}</p>
+                    <p className="text-xs text-slate-500">{plan.description}</p>
                   </div>
                   
                   <Button 

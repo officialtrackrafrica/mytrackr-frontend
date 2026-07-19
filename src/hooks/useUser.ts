@@ -14,6 +14,7 @@ export interface User {
   hasSelectedBusinessType: boolean;
   createdAt: string;
   updatedAt: string;
+  hasSubmittedAcquisitionSource: boolean
 }
 
 export const useUser = () => {

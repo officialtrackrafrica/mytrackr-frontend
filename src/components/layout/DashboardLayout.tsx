@@ -7,6 +7,7 @@ import Logo from '../../assets/Logo.png';
 import { useCheckGoogleSignup } from '../../features/auth/hooks/useSignUp';
 import { GoogleOnboardingModal } from '../GoogleOnboardingModal';
 import { useUser } from '../../hooks/useUser';
+import { AcquisitionSourceModal } from '../AcquisitionSourceModal';
 
 
 interface Props {
@@ -24,6 +25,7 @@ export const DashboardLayout = ({ children, title, subtitle, extra }: Props) => 
 
  //  1. Derive the state directly. No useState, no useEffect!
   const showOnboarding = googleCheck?.signedUpWithGoogle === true && user?.hasSelectedBusinessType === false;
+  const showAcquisitionModal = !isUserLoading && user?.hasSubmittedAcquisitionSource === false;
 
   if (isChecking || isUserLoading) {
     return <div className="min-h-screen bg-slate-50 flex items-center justify-center">Loading...</div>;
@@ -101,6 +103,7 @@ export const DashboardLayout = ({ children, title, subtitle, extra }: Props) => 
       <GoogleOnboardingModal 
         isOpen={showOnboarding} 
       />
+      <AcquisitionSourceModal isOpen={showAcquisitionModal} />
     </div>
   );
 };

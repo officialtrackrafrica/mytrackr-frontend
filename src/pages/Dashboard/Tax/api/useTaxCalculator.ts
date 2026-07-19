@@ -157,23 +157,23 @@ export const useTaxCalculatorEstimate = (params: TaxEstimateParams) => {
 
 export const useDownloadTaxReport = () => {
   return useMutation({
-    mutationFn: async (params: { year: number; deductions?: number }) => {
-      const response = await api.get('/tax/estimate/report.pdf', {
-        params,
+    // 👉 1. Accept format alongside year and deductions
+    mutationFn: async ({ year, deductions, format }: { year: number; deductions?: number; format: 'pdf' | 'csv' }) => {
+      // 👉 2. Inject format into URL
+      const response = await api.get(`/tax/estimate/report.${format}`, {
+        params: { year, deductions },
         responseType: 'blob', // Crucial for handling file downloads
       });
 
-      // Create a temporary URL for the Blob
       const url = window.URL.createObjectURL(new Blob([response.data]));
       
-      // Create a hidden link and trigger the download
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `MyTrackr_Tax_Estimate_${params.year}.pdf`); 
+      // 👉 3. Update extension
+      link.setAttribute('download', `MyTrackr_Tax_Estimate_${year}.${format}`); 
       document.body.appendChild(link);
       link.click();
       
-      // Cleanup
       link.remove();
       window.URL.revokeObjectURL(url);
     }

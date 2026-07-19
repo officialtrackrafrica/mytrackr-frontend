@@ -265,7 +265,7 @@ const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
 
         {/* Net Profit Card */}
         <div className="p-6 border border-slate-100 rounded-2xl bg-white shadow-sm">
-          <p className="text-sm font-medium text-slate-500 mb-2">Net Profit</p>
+          <p className="text-sm font-medium text-slate-500 mb-2">Real/Net Profit</p>
           {metricsLoading ? (
             <Skeleton className="h-8 w-32" />
           ) : metricsError ? (

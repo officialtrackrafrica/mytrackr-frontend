@@ -44,23 +44,26 @@ export const useCashflow = (params: CashflowParams) => {
 
 export const useDownloadCashflowReport = () => {
   return useMutation({
-    mutationFn: async (params: { startDate: string, endDate: string }) => {
-      const response = await api.get('/reports/cash-flow/export.pdf', {
-        params,
+    mutationFn: async ({ dates, format }: { dates: { startDate: string, endDate: string }, format: 'pdf' | 'csv' }) => {
+      
+    
+      const endpoint = format === 'csv' 
+        ? '/reports/cash-flow/export' 
+        : '/reports/cash-flow/export.pdf';
+
+      const response = await api.get(endpoint, {
+        params: dates,
         responseType: 'blob', // Crucial for handling file downloads
       });
 
-      // Create a temporary URL for the Blob
       const url = window.URL.createObjectURL(new Blob([response.data]));
       
-      // Create a hidden link and trigger the download
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `MyTrackr_Cashflow_${params.startDate}_to_${params.endDate}.pdf`); 
+      link.setAttribute('download', `MyTrackr_Cashflow_${dates.startDate}_to_${dates.endDate}.${format}`); 
       document.body.appendChild(link);
       link.click();
       
-      // Cleanup
       link.remove();
       window.URL.revokeObjectURL(url);
     }

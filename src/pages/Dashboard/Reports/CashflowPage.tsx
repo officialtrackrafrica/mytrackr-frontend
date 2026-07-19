@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
-import { Calendar, InfoCircle, ArrowUp, ArrowDown, Warning2, DocumentText } from 'iconsax-react';
+import { Calendar, InfoCircle, ArrowUp, ArrowDown, Warning2, DocumentText, ArrowDown2 } from 'iconsax-react';
 import { useCashflow, useDownloadCashflowReport } from './api/useCashflow';
 import { formatCurrency } from '../../../utils/helpers';
 import { cn } from '../../../utils/cn';
@@ -50,10 +50,12 @@ export const CashflowPage = () => {
 
   const { data, isLoading, isError } = useCashflow(dates);
 const { mutate: downloadReport, isPending: isDownloading } = useDownloadCashflowReport();
-
-  const handleGenerateReport = () => {
-    downloadReport(dates, {
-      onSuccess: () => toast.success('Cashflow report downloaded successfully!'),
+const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
+ const handleGenerateReport = (format: 'pdf' | 'csv') => {
+    setIsExportMenuOpen(false); // Close dropdown menu
+    
+    downloadReport({ dates, format }, {
+      onSuccess: () => toast.success(`Cashflow report (${format.toUpperCase()}) downloaded successfully!`),
       onError: () => toast.error('Failed to generate report. Please try again.')
     });
   };
@@ -62,17 +64,34 @@ const { mutate: downloadReport, isPending: isDownloading } = useDownloadCashflow
       title="Cashflow"
       subtitle="Cashflow Statement Overview"
       extra={
-        <Button 
-          className="w-auto py-2 bg-brand-blue" 
-          onClick={handleGenerateReport}
-          disabled={isDownloading || isLoading || isError}
-        >
-          <div className="flex items-center gap-2 text-white">
-            {isDownloading && <div className="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin" />}
-            <DocumentText size="18" color="#fff" /> 
-            {isDownloading ? 'Generating...' : 'Download report'}
-          </div>
-        </Button>
+        <div className="relative">
+          <Button 
+            className="w-auto py-2 bg-brand-blue" 
+            onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
+            disabled={isDownloading || isLoading || isError}
+          >
+            <div className="flex items-center gap-2 text-white">
+              {isDownloading && <div className="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin" />}
+              <DocumentText size="18" color="#fff" /> 
+              {isDownloading ? 'Generating...' : 'Export'}
+              {!isDownloading && <ArrowDown2 size="16" color="#fff" />}
+            </div>
+          </Button>
+
+          {isExportMenuOpen && !isDownloading && !isLoading && !isError && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setIsExportMenuOpen(false)}></div>
+              <div className="absolute right-0 mt-2 w-40 bg-white border border-slate-200 shadow-lg rounded-xl flex flex-col overflow-hidden z-50 py-1 animate-in fade-in slide-in-from-top-2">
+                <button onClick={() => handleGenerateReport('pdf')} className="px-4 py-2.5 text-sm font-medium text-slate-700 text-left hover:bg-slate-50 transition-colors">
+                  Export as PDF
+                </button>
+                <button onClick={() => handleGenerateReport('csv')} className="px-4 py-2.5 text-sm font-medium text-slate-700 text-left hover:bg-slate-50 transition-colors">
+                  Export as CSV
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       }
     >
       {/* 1. Date Range Section */}
@@ -166,7 +185,15 @@ const { mutate: downloadReport, isPending: isDownloading } = useDownloadCashflow
                 What is <span className="text-brand-blue">"Burn rate"</span> ?
               </h4>
               <p className="text-sm text-slate-600 leading-relaxed">
-                Burn rate is the pace at which your company or business spends its available cash reserves to finance overhead costs before generating positive cash flow. Usually measured monthly, it indicates how quickly a company depletes its capital and determines the "runway," or time remaining before needing more funding or turning a profit.
+                How much money your business spends every month, on average.
+              </p>
+            </div>
+            <div className="bg-blue-50/50 border border-blue-100 rounded-2xl p-6 mt-6">
+              <h4 className="text-base font-bold text-slate-900 mb-2">
+                What is <span className="text-brand-blue">"Runway"</span> ?
+              </h4>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                How long your business can survive on the money you have right now.
               </p>
             </div>
           </>

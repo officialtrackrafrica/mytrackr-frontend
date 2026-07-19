@@ -1,8 +1,8 @@
 // src/pages/dashboard/components/settings/BillingTab.tsx
-import { ArrowDown, ArrowRight, DocumentDownload, Sms, TickCircle } from 'iconsax-react';
+import { ArrowDown, ArrowRight, DocumentDownload, TickCircle } from 'iconsax-react';
 import { Button } from '../../../../components/ui/Button';
 import { useState } from 'react';
-import { useBillingHistory, useCancelSubscription, useCurrentPlan, usePaymentMethod } from '../api/useBilling';
+import { useBillingHistory, useCancelSubscription, useCurrentPlan } from '../api/useBilling';
 import { formatDate } from '../../../../utils/helpers';
 import { UpgradePlanView } from './UpgradePlan';
 import { Skeleton } from '../../../../components/ui/Skeleton';
@@ -45,7 +45,7 @@ export const BillingTab = () => {
   // 1. Fetch Dynamic Data
   const { data: currentPlan, isLoading: loadingPlan } = useCurrentPlan();
   const { data: billingHistory, isLoading: loadingHistory } = useBillingHistory();
-  const { data: paymentMethod, isLoading: loadingPayment } = usePaymentMethod();
+  // const { data: paymentMethod, isLoading: loadingPayment } = usePaymentMethod();
 const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const { mutate: cancelSubscription, isPending: isCanceling } = useCancelSubscription();
 
@@ -60,6 +60,7 @@ const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
       }
     });
   };
+
 
   // If the user clicks "Upgrade", we return the new view instead of the dashboard!
   if (activeView === 'upgrade') {
@@ -126,52 +127,7 @@ const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
           </div>
         </div>
 
-        {/* Card 2: Payment Method */}
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-xs">
-          <div className="p-6">
-            <div className="mb-4">
-              <h4 className="text-sm font-bold text-slate-900">Payment method</h4>
-              <p className="text-xs text-slate-500 mt-1">Change how you pay for your plan.</p>
-            </div>
-
-            <div className="p-4 border border-slate-200 rounded-xl bg-white flex items-start justify-between gap-4">
-              {loadingPayment ? (
-                <div className="text-sm text-slate-400 py-2">Loading card details...</div>
-              ) : !paymentMethod ? (
-                <div className="text-sm text-slate-500 py-2">No payment method added yet.</div>
-              ) : (
-                <div className="flex items-start gap-4">
-                  {/* Dynamic Card Brand Logo */}
-                  <div className="px-3 py-1.5 bg-white border border-slate-200 shadow-sm rounded-md flex items-center justify-center shrink-0 min-w-[50px]">
-                    <span className="text-blue-800 font-black italic text-sm tracking-widest uppercase">
-                      {paymentMethod.brand || 'CARD'}
-                    </span>
-                  </div>
-
-                  <div className="space-y-1">
-                    <p className="text-sm font-bold text-slate-700 capitalize">
-                      {paymentMethod.brand} ending in {paymentMethod.last4}
-                    </p>
-                    <p className="text-xs text-slate-500 font-medium">
-                      Expiry {paymentMethod.expMonth}/{paymentMethod.expYear}
-                    </p>
-                    {/* Only show email if your backend returns it with the card */}
-                    {paymentMethod.billingEmail && (
-                      <div className="flex items-center gap-1.5 pt-1 text-slate-500">
-                        <Sms size="14" />
-                        <span className="text-xs font-medium">{paymentMethod.billingEmail}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              <Button variant="outline" className="w-auto py-1.5 px-4 text-xs font-semibold border-slate-200 text-slate-700">
-                {paymentMethod ? 'Edit' : 'Add card'}
-              </Button>
-            </div>
-          </div>
-        </div>
+       
 
       </div>
 

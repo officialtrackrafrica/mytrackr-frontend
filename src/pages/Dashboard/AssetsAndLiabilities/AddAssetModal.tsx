@@ -108,7 +108,7 @@ const dropdownOptions = isAsset ? categories : liabilityTypes;
       isOpen={isOpen}
       onClose={onClose}
       title={isAsset ? "Add your Assets" : "Add your Liabilities"}
-      description={isAsset ? "Add your assets to manage it all in one place." : "Add your liabilities to track your debts accurately."}
+      description={isAsset ? "Add your assets to manage it all in one place." : "Add your liabilities to track your debt accurately."}
     >
       <form 
         onSubmit={handleSubmit(onSubmit, (err) => console.log("Validation Errors:", err))} 

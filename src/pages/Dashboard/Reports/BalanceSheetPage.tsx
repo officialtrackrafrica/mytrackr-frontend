@@ -140,7 +140,7 @@ export const BalanceSheetPage = () => {
                     ))
                   )}
                   <div className="flex justify-between items-center px-4 py-3 text-sm bg-slate-100/80 font-bold text-slate-900 rounded-lg mt-2">
-                    <span>Total Liabilities / Debts</span>
+                    <span>Total Liabilities / Debt</span>
                     <span>{formatCurrency(data?.liabilities?.totalLiabilities || 0)}</span>
                   </div>
                 </div>

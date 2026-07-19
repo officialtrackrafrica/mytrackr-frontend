@@ -16,13 +16,12 @@ import { UploadStatementModal } from './components/UploadStatementModal';
 export const TransactionsPage = () => {
   const [_search, setSearch] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'categorised' | 'uncategorised'>('all');
-  const [page, setPage] = useState(1);
   const [isLogModalOpen, setLogModalOpen] = useState(false);
   const [isFilterOpen, setFilterOpen] = useState(false);
   const [transactionToEdit, setTransactionToEdit] = useState<any | null>(null);
   const [transactionToDelete, setTransactionToDelete] = useState<any | null>(null);
   const [isUploadModalOpen, setUploadModalOpen] = useState(false);
-
+const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
 
   const [queryParams, setQueryParams] = useState({
     page: 1,
@@ -39,14 +38,14 @@ export const TransactionsPage = () => {
   const { data, isLoading } = useTransactions(queryParams);
   const transactionsList = data?.data || [];
   const totalCount = data?.meta?.total || 0;
-  // const totalPages = data?.meta?.totalPages || 1;
+  const totalPages = data?.meta?.totalPages || 1;
   // 2. Initialize the new update hook
   const { mutate: updateCategory } = useUpdateTransactionCategory();
 
   const { mutate: downloadReport, isPending: isDownloading } = useDownloadTransactionReport();
 
-  const handleGenerateReport = () => {
-    // Gather all current filters
+  const handleGenerateReport = (format: 'pdf' | 'csv') => {
+    setIsExportMenuOpen(false);
     const rawFilters = { ...queryParams, search: _search };
     
     // Clean the payload: remove empty strings, empty arrays, and undefined values
@@ -63,8 +62,8 @@ export const TransactionsPage = () => {
       })
     );
 
-    downloadReport(cleanFilters, {
-      onSuccess: () => toast.success('Report downloaded successfully!'),
+   downloadReport({ filters: cleanFilters, format }, {
+      onSuccess: () => toast.success(`${format.toUpperCase()} report downloaded successfully!`),
       onError: () => toast.error('Failed to generate report. Please try again.')
     });
   };
@@ -96,13 +95,27 @@ export const TransactionsPage = () => {
           <Button variant="outline" className="flex w-auto py-2" onClick={() => setLogModalOpen(true)}>
             <Add size="18" color='#050E1E' /> Log transactions
           </Button>
-          <Button className="w-auto py-2 bg-brand-blue" onClick={handleGenerateReport}
+          <Button className="w-auto py-2 bg-brand-blue"
+          onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
             disabled={isDownloading}>
             <div className="flex items-center gap-2">
               {isDownloading && <div className="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin" />}
               <DocumentText size="18" color='#fff' /> {isDownloading ? 'Generating...' : 'Generate report'}
             </div>
           </Button>
+          {isExportMenuOpen && !isDownloading && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setIsExportMenuOpen(false)}></div>
+                <div className="absolute right-0 mt-2 w-40 bg-white border border-slate-200 shadow-lg rounded-xl flex flex-col overflow-hidden z-50 py-1 animate-in fade-in slide-in-from-top-2">
+                  <button onClick={() => handleGenerateReport('pdf')} className="px-4 py-2.5 text-sm font-medium text-slate-700 text-left hover:bg-slate-50 transition-colors">
+                    Export as PDF
+                  </button>
+                  <button onClick={() => handleGenerateReport('csv')} className="px-4 py-2.5 text-sm font-medium text-slate-700 text-left hover:bg-slate-50 transition-colors">
+                    Export as CSV
+                  </button>
+                </div>
+              </>
+            )}
         </div>
       }
     >
@@ -145,14 +158,14 @@ export const TransactionsPage = () => {
             <Button variant="outline" className="w-auto py-2 text-xs" onClick={() => setFilterOpen(true)}>
               <Setting5 size="16" color='#475467' /> Sort & Filter
             </Button>
-           <Button 
+           {/* <Button 
               variant="outline" 
               className="w-auto py-2 text-xs hidden sm:flex"
               onClick={handleGenerateReport}
               disabled={isDownloading}
             >
               {isDownloading ? 'Generating...' : 'View report'}
-            </Button>
+            </Button> */}
           </div>
         </div>
 
@@ -260,11 +273,21 @@ export const TransactionsPage = () => {
 
         {/* 4. Pagination Footer */}
         <div className="p-4 border-t border-slate-100 flex items-center justify-between">
-          <Button variant="outline" className="w-auto py-1.5 text-xs px-4" disabled={page === 1} onClick={() => setPage(p => p - 1)}>
+          <Button 
+    variant="outline" 
+    className="w-auto py-1.5 text-xs px-4" 
+    disabled={queryParams.page === 1} 
+    onClick={() => setQueryParams(prev => ({ ...prev, page: prev.page - 1 }))} 
+  >
             Previous
           </Button>
-          <p className="text-xs text-slate-500 font-medium">Page {page} of 10</p>
-          <Button variant="outline" className="w-auto py-1.5 text-xs px-4" onClick={() => setPage(p => p + 1)}>
+          <p className="text-xs text-slate-500 font-medium">Page {queryParams.page} of {totalPages}</p>
+          <Button 
+    variant="outline" 
+    className="w-auto py-1.5 text-xs px-4" 
+    disabled={queryParams.page >= totalPages} 
+    onClick={() => setQueryParams(prev => ({ ...prev, page: prev.page + 1 }))} 
+  >
             Next
           </Button>
         </div>

@@ -7,7 +7,7 @@ const faqs = [
   {
     icon: Heart,
     question: "Who is MyTrackr for? ",
-    answer: "MyTrackr is built for small business owners, freelancers, online sellers, service providers, and growing businesses that want better visibility into their finances without stress, manual calculation or complicated accounting software. "
+    answer: "MyTrackr is built for growing businesses, freelancers, service providers, that want better visibility into their finances without stress, manual calculation or complicated systems."
   },
   {
     icon: ArrowSwapHorizontal,
@@ -26,7 +26,7 @@ const faqs = [
   },
   {
     icon: Refresh,
-    question: "What makes MyTrackr different from accounting software?",
+    question: "What makes MyTrackr different from other accounting softwares?",
     answer: "MyTrackr focuses on simplicity. It helps growing business owners understand their money without the difficulty of traditional accounting tools."
   },
   {

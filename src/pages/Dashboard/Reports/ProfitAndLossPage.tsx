@@ -12,25 +12,29 @@ export const ProfitAndLossPage = () => {
     startDate: '2026-01-01',
     endDate: '2026-12-31'
   });
-
+const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const { data, isLoading, isError } = useProfitAndLoss(dates);
 const isProfit = (data?.netProfit || 0) >= 0;
 const { mutate: downloadReport, isPending: isDownloading } = useDownloadPnLReport();
 
-  const handleGenerateReport = () => {
-    downloadReport(dates, {
-      onSuccess: () => toast.success('P&L report downloaded successfully!'),
+const handleGenerateReport = (format: 'pdf' | 'csv') => {
+    setIsExportMenuOpen(false); 
+
+    downloadReport({ dates, format }, {
+      onSuccess: () => toast.success(`P&L report (${format.toUpperCase()}) downloaded successfully!`),
       onError: () => toast.error('Failed to generate report. Please try again.')
     });
   };
+
   return (
     <DashboardLayout
       title="Financial Reports"
       subtitle="Profit and Loss Statement Overview"
       extra={
+        <div className="relative">
         <Button 
           className="w-auto py-2 bg-brand-blue" 
-          onClick={handleGenerateReport}
+          onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
           disabled={isDownloading || isLoading || isError}
         >
           <div className="flex items-center gap-2 text-white">
@@ -39,6 +43,21 @@ const { mutate: downloadReport, isPending: isDownloading } = useDownloadPnLRepor
             {isDownloading ? 'Generating...' : 'Download report'}
           </div>
         </Button>
+        {isExportMenuOpen && !isDownloading && !isLoading && !isError && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setIsExportMenuOpen(false)}></div>
+              <div className="absolute right-0 mt-2 w-40 bg-white border border-slate-200 shadow-lg rounded-xl flex flex-col overflow-hidden z-50 py-1 animate-in fade-in slide-in-from-top-2">
+                <button onClick={() => handleGenerateReport('pdf')} className="px-4 py-2.5 text-sm font-medium text-slate-700 text-left hover:bg-slate-50 transition-colors">
+                  Export as PDF
+                </button>
+                <button onClick={() => handleGenerateReport('csv')} className="px-4 py-2.5 text-sm font-medium text-slate-700 text-left hover:bg-slate-50 transition-colors">
+                  Export as CSV
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+        
       }
     >
       {/* 1. Date Range Filter controls */}
