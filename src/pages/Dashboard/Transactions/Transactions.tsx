@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
 import { Button } from '../../../components/ui/Button';
-import { SearchNormal1, Setting5, DocumentText, Add, CloseCircle, DocumentUpload, More, Edit2, Trash } from 'iconsax-react';
+import { SearchNormal1, Setting5, DocumentText, Add, CloseCircle, DocumentUpload, Edit2, Trash } from 'iconsax-react';
 import { useDownloadTransactionReport, useTransactions, useUpdateTransactionCategory } from '../../../hooks/useTransactions';
 import { TransactionsTable } from './components/TransactionTable';
 import { formatCurrency } from '../../../utils/helpers';

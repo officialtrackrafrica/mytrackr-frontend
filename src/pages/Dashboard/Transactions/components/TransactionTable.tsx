@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Table } from '../../../../components/ui/table'; // Adjust path to your reusable Table component
 import { cn } from '../../../../utils/cn';
 import { formatCurrency } from '../../../../utils/helpers';
-import { Add, Edit2, SearchNormal1, Trash, More, Magicpen } from 'iconsax-react';
+import { Add, Edit2, SearchNormal1, Trash, Magicpen } from 'iconsax-react';
 import { Button } from '../../../../components/ui/Button';
 import type { ColumnDef } from '../../../../components/ui/table';
 import { useRetroactiveAiSync, useTransactionCategories } from '../../../../hooks/useTransactions';
