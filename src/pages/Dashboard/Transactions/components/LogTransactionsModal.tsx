@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { useCreateTransaction, useTransactionCategories, useUpdateTransaction } from '../../../../hooks/useTransactions';
 import { Dropdown } from '../../../../components/ui/Dropdown';
 import { useEffect } from 'react';
+import { Drawer } from '../../../../components/ui/Drawer';
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -102,12 +103,12 @@ const onSubmit = (formData: FormValues) => {
     }
   };
 
-  const fieldClass = "flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 pt-2";
+  const fieldClass = "flex flex-col sm:flex-row sm:items-start gap-2 pt-2";
   const labelClass = "text-sm font-medium text-slate-700 sm:w-32 shrink-0 pt-2";
   const inputClass = "w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-1 focus:ring-brand-blue outline-none transition-all placeholder:text-slate-400 disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed read-only:bg-slate-50 read-only:text-slate-500 read-only:cursor-not-allowed";
 
   return (
-    <Dialog
+    <Drawer
       isOpen={isOpen}
       onClose={onClose}
       title={isEditMode ? "Edit Transaction" : "Log a Transaction"}
@@ -244,6 +245,6 @@ const onSubmit = (formData: FormValues) => {
           {isPending ? "Logging transaction..." : isEditMode ? "Save Changes" : "Add transaction"}
         </Button>
       </form>
-    </Dialog>
+    </Drawer>
   );
 };

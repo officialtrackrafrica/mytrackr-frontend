@@ -70,7 +70,7 @@ export const TransactionsTable = ({
     {
       key: 'description',
       label: 'Description',
-      render: (item) => <span className="text-slate-500">{item.description}</span>,
+      render: (item) => <div className="text-slate-500 max-w-[150px] lg:max-w-[200px] truncate">{item.description}</div>,
     },
     {
       key: 'amount',

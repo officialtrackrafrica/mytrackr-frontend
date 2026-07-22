@@ -112,7 +112,7 @@ const dropdownOptions = isAsset ? categories : liabilityTypes;
     >
       <form 
         onSubmit={handleSubmit(onSubmit, (err) => console.log("Validation Errors:", err))} 
-        className="h-full flex flex-col justify-between space-y-6"
+        className="h-full w-fit flex flex-col justify-between space-y-6"
       >
         <div className="space-y-4">
           {/* Universal Name Input */}

@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { useUpgradePlan } from '../../../pages/Dashboard/Settings/api/useBilling';
 import { AuthLayout } from '../../../components/layout/AuthLayout';
 import { SubscriptionStep } from './SubscriptionStep';
+import { ArrowLeft } from 'iconsax-react';
 
 
 export const SubscriptionPage = () => {
@@ -34,6 +35,13 @@ export const SubscriptionPage = () => {
   return (
     <AuthLayout currentStep={3}>
       <div className=""> 
+        <button 
+          onClick={() => navigate(-1)} 
+          className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
+        >
+          <ArrowLeft size="18" color='#1A1A1A'/>
+          Back
+        </button>
         <SubscriptionStep 
           onSelectPlan={handlePlanSelection} 
           isProcessing={isSubscribing} 

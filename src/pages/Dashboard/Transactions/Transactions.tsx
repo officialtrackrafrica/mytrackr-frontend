@@ -195,7 +195,7 @@ const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
         </div>
 
         {/* 3. The Content: Desktop Table vs Mobile Cards */}
-        <div className="hidden md:block">
+        <div className="p-4 ">
           <TransactionsTable data={transactionsList} onUpdateTransaction={handleUpdateTransaction}
             onEdit={(item) => {
               setTransactionToEdit(item);
@@ -212,7 +212,7 @@ const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
               {/* Row 1: Name (Gray Background) */}
               <div className="bg-slate-50 px-4 py-3 flex justify-between items-start">
                 <div>
-                  <p className="text-slate-500 font-medium mb-1">Name</p>
+                  <p className="text-slate-500 font-medium mb-1">Namezzzzzzzzzz</p>
                   <p className="font-bold text-slate-800">{tx.name || 'N/A'}</p>
                 </div>
                <div className="">

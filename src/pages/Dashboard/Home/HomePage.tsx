@@ -86,11 +86,12 @@ const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
         ) : (
           accountSlots.map((slot) => {
             const account = accounts[slot.index];
-
+console.log(account)
             if (account) {
               // ==========================================
               // FILLED STATE (Account Connected)
               // ==========================================
+              
               return (
                 <div key={slot.id} className="p-6 border border-slate-100 rounded-2xl bg-white shadow-sm flex items-center gap-8 relative">
                   <button className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors">
@@ -170,7 +171,7 @@ const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
 
                     {/*  Fallback for Starter Plan (No Mono, No Website) */}
                     {maxBanksAllowed <= slot.index && !canLinkWebsite && canUploadManual && slot.index === 0 && (
-                      <Button variant="outline" className="py-2 px-4 text-xs font-semibold h-auto border-slate-200 text-slate-700">
+                      <Button variant="outline" className="py-2 px-4 text-xs font-semibold h-auto border-slate-200 text-slate-700" onClick={() => setUploadModalOpen(true)}>
                         Upload Statement
                       </Button>
                     )}
