@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Table } from '../../../../components/ui/table'; // Adjust path to your reusable Table component
 import { cn } from '../../../../utils/cn';
 import { formatCurrency } from '../../../../utils/helpers';
@@ -29,7 +29,25 @@ export const TransactionsTable = ({
   const { mutate: runAiSync, isPending: isSyncingAi } = useRetroactiveAiSync();
   const rawData = data as any;
   // Safely extract data array if it's wrapped in a response object
-  const transactionsList = Array.isArray(rawData) ? data : (rawData?.data || []);
+  // const transactionsList = Array.isArray(rawData) ? data : (rawData?.data || []);
+  const rawList = Array.isArray(rawData) ? data : (rawData?.data || []);
+
+  //  2. Force an absolute, stable sort on the frontend
+  const transactionsList = useMemo(() => {
+    return [...rawList].sort((a, b) => {
+      const timeA = new Date(a.date || 0).getTime();
+      const timeB = new Date(b.date || 0).getTime();
+
+      // Sort by Date (Newest first)
+      if (timeA !== timeB) {
+        return timeB - timeA;
+      }
+      
+      // TIE-BREAKER: If dates are exactly the same, sort alphabetically by ID.
+      // This guarantees they will NEVER swap places when updated!
+      return (a.id || '').localeCompare(b.id || '');
+    });
+  }, [rawList]);
 
   if (!transactionsList || transactionsList.length === 0) {
     return (
@@ -70,7 +88,7 @@ export const TransactionsTable = ({
     {
       key: 'description',
       label: 'Description',
-      render: (item) => <div className="text-slate-500 max-w-[150px] lg:max-w-[200px] truncate">{item.description}</div>,
+      render: (item) => <div className="text-slate-500 max-w-[150px] lg:max-w-[200px] truncate" title={item.description}>{item.description}</div>,
     },
     {
       key: 'amount',

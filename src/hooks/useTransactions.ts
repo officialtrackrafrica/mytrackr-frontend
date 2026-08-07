@@ -26,12 +26,20 @@ interface TransactionParams {
 }
 
 export const useTransactions = (params: TransactionParams) => {
+  // 👉 1. Merge the incoming params with default sorting parameters
+  const finalParams: TransactionParams = {
+    sortBy: 'date',      // Force stable sorting by date
+    sortOrder: 'DESC',   // Newest first
+    ...params,           // Let any incoming params override the defaults if needed
+  };
+
   return useQuery({
-    queryKey: ['transactions', params],
+    // 👉 2. Use finalParams for the queryKey so caching works correctly
+    queryKey: ['transactions', finalParams], 
     queryFn: async () => {
-      //  BULLETPROOF CLEANING: Remove undefined, null, and empty strings
+      // BULLETPROOF CLEANING: Remove undefined, null, and empty strings
       const cleanParams = Object.fromEntries(
-        Object.entries(params).filter(([_, v]) => {
+        Object.entries(finalParams).filter(([_, v]) => {
           if (Array.isArray(v)) return v.length > 0; // Drop empty arrays
           return v !== undefined && v !== null && v !== ''; 
         })
