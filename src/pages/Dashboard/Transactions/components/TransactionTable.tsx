@@ -85,10 +85,34 @@ export const TransactionsTable = ({
       label: 'Name',
       render: (item) => <span className="font-bold text-slate-900">{item.name || '-'}</span>,
     },
+    // {
+    //   key: 'description',
+    //   label: 'Description',
+    //   render: (item) => <div className="text-slate-500 min-w-[200px] lg:min-w-[250px] whitespace-normal break-words" title={item.description}>{item.description}</div>,
+    // },
     {
       key: 'description',
       label: 'Description',
-      render: (item) => <div className="text-slate-500 max-w-[150px] lg:max-w-[200px] truncate" title={item.description}>{item.description}</div>,
+      render: (item) => (
+        <div className="group relative flex items-center">
+          {/* 👉 1. The visible table cell (Truncated) */}
+          <div className="text-slate-500 max-w-[150px] lg:max-w-[200px] truncate cursor-default">
+            {item.description || '-'}
+          </div>
+
+          {/* 👉 2. The Custom Tooltip (Wraps text, only shows on hover) */}
+          {item.description && item.description.length > 20 && (
+            <div className="absolute z-50 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity bg-slate-800 text-white text-xs rounded-md p-2.5 shadow-xl bottom-full mb-2 left-0 w-max max-w-[250px] sm:max-w-[350px] whitespace-normal break-words pointer-events-none">
+              {item.description}
+              
+              {/* Tooltip Arrow */}
+              <svg className="absolute text-slate-800 h-2 w-full left-0 top-full" x="0px" y="0px" viewBox="0 0 255 255">
+                <polygon className="fill-current" points="0,0 127.5,127.5 255,0"/>
+              </svg>
+            </div>
+          )}
+        </div>
+      ),
     },
     {
       key: 'amount',
@@ -120,8 +144,9 @@ export const TransactionsTable = ({
     {
       key: 'category',
       label: 'Category',
-      render: (item) => {
-        
+      render: (item, index) => {
+        // If it's in the last 3 items of the array, tell it to open upwards
+        const isNearBottom = index >= transactionsList.length - 3;
         return (
           <div className="min-w-[140px]">
             {/* <Dropdown
@@ -139,6 +164,8 @@ export const TransactionsTable = ({
           categories={categories} 
           loadingCategories={loadingCategories}
           onUpdateTransaction={onUpdateTransaction} 
+          // Pass a placement prop so the internal component knows which way to open
+              placement={isNearBottom ? "top" : "bottom"}
         />
           </div>
         );
@@ -147,7 +174,7 @@ export const TransactionsTable = ({
     {
       key: 'subCategory',
       label: 'Sub-Category',
-      render: (item) => {
+      render: (item, index) => {
         const activeCategory = categories?.find((c: any) => c.id === item.categoryId);
         const subCategories = activeCategory?.subCategories || [];
         const isDisabled = !item.categoryId || subCategories.length === 0;
@@ -157,6 +184,8 @@ export const TransactionsTable = ({
         let placeholderText = "Add sub-category";
         if (!item.categoryId) placeholderText = "Select category first";
         else if (subCategories.length === 0) placeholderText = "-";
+        // 👉 Determine if we are near the bottom of the table
+        const isNearBottom = index >= transactionsList.length - 3;
 
         return (
           <div className="min-w-[140px]">
@@ -166,7 +195,9 @@ export const TransactionsTable = ({
               onChange={(newVal) => onUpdateTransaction?.(item.id, { subCategoryId: newVal })}
               placeholder={placeholderText}
               disabled={isDisabled}
-              className="py-1.5 text-[11px] bg-slate-50 border-slate-200"
+              className="py-1.5 text-[11px] bg-slate-50 border-slate-200 z-100"
+              // Pass a placement prop so the internal component knows which way to open
+              placement={isNearBottom ? "top" : "bottom"}
             />
           </div>
         );
@@ -266,7 +297,7 @@ export const TransactionsTable = ({
               </div>
 
               {/* Row 2: Description (White Background) */}
-              <div className="bg-white px-4 py-3">
+              <div className=" px-4 py-3">
                 <p className="text-slate-500 font-medium mb-1">Description</p>
                 <p className="font-bold text-slate-800">{tx.description || 'N/A'}</p>
               </div>

@@ -8,13 +8,15 @@ interface AiCategoryDropdownProps {
   categories: any[];
   loadingCategories?: boolean;
   onUpdateTransaction?: (id: string, updates: { categoryId?: string; subCategoryId?: string | null }) => void;
+  placement?: 'top' | 'bottom';
 }
 
 export const AiCategoryDropdown = ({ 
   item, 
   categories, 
   onUpdateTransaction, 
-  loadingCategories 
+  loadingCategories,
+  placement = 'bottom' 
 }: AiCategoryDropdownProps) => {
   
   // Track if we have already fetched suggestions to prevent redundant requests
@@ -60,6 +62,7 @@ export const AiCategoryDropdown = ({
         placeholder={isBusy ? "Generating AI..." : "Add category"}
         disabled={isBusy}
         className="py-1.5 text-xs bg-slate-50 border-slate-200"
+        placement={placement}
       />
     </div>
   );

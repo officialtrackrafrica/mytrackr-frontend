@@ -15,6 +15,7 @@ interface DropdownProps {
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  placement?: 'top' | 'bottom';
 }
 
 export const Dropdown = ({
@@ -23,7 +24,8 @@ export const Dropdown = ({
   onChange,
   placeholder = "Select an option",
   disabled = false,
-  className
+  className,
+  placement = "bottom"
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -67,9 +69,14 @@ export const Dropdown = ({
         />
       </button>
 
-      {/* Dropdown Menu Layer */}
+     {/* 👉 3. Dynamically apply top or bottom positioning */}
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1.5 bg-white border border-slate-100 rounded-xl shadow-lg animate-in fade-in slide-in-from-top-2 duration-200 max-h-60 overflow-y-auto">
+        <div className={cn(
+          "absolute z-50 w-full bg-white border border-slate-100 rounded-xl shadow-lg animate-in fade-in max-h-60 overflow-y-auto",
+          placement === "top" 
+            ? "bottom-full mb-1.5 slide-in-from-bottom-2" 
+            : "top-full mt-1.5 slide-in-from-top-2"
+        )}>
           <div className="p-1.5 flex flex-col gap-0.5">
             {options.length === 0 ? (
               <div className="px-3 py-2 text-xs text-slate-400 text-center">No options available</div>

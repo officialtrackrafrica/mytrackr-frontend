@@ -7,7 +7,7 @@ export interface ColumnDef<T> {
   key: string;
   label: string;
   /** Optional custom render function for badges, actions, or formatted text */
-  render?: (item: T) => ReactNode;
+  render?: (item: T, index: number) => ReactNode;
   /** Optional class to pass to the <th> header */
   headerClassName?: string;
   /** Optional class to pass to the <td> cell */
@@ -116,7 +116,7 @@ const tableData: T[] = Array.isArray(data)
               </td>
             </tr>
           ) : (
-            tableData.map((item) => {
+            tableData.map((item, rowIndex) => {
               const rowKey = keyExtractor(item);
               const isSelected = selectedKeys.includes(rowKey);
 
@@ -143,7 +143,7 @@ const tableData: T[] = Array.isArray(data)
                   {/* Row Data Cells */}
                   {columns.map((col) => (
                     <td key={`${rowKey}-${col.key}`} className={cn("p-4 text-slate-600", col.cellClassName)}>
-                      {col.render ? col.render(item) : item[col.key]}
+                      {col.render ? col.render(item, rowIndex) : item[col.key]}
                     </td>
                   ))}
                 </tr>
