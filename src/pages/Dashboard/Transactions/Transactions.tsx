@@ -30,8 +30,8 @@ const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
     startDate: '',
     sortOrder: 'DESC' as 'ASC' | 'DESC',
     endDate: '',
-    categoryId: [] as string[],
-    subCategoryId: [] as string[],
+    categoryIds: [] as string[],
+    subCategoryIds: [] as string[],
     isCategorised: undefined as boolean | undefined,
   });
 

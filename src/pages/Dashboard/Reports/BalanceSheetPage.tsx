@@ -20,7 +20,7 @@ export const BalanceSheetPage = () => {
       {/* 1. Date Range Section */}
       <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-slate-700 text-sm font-semibold">
-          <Calendar size="18" className="text-slate-400" />
+          <Calendar size="18" className="text-slate-400" color='#90a1b9'/>
           <span>Date range:</span>
         </div>
         

@@ -34,3 +34,39 @@ export const useCreateTicket = () => {
     },
   });
 };
+
+// 👉 1. Hook to fetch the full conversation thread for a single ticket
+export const useTicketDetails = (id: string | undefined) => {
+  return useQuery({
+    queryKey: ["ticket", id],
+    queryFn: async () => {
+      const response = await api.get(`/support/ticket/${id}`);
+      return response.data;
+    },
+    // Only run this query if an ID is actually passed in (prevents errors when the drawer is closed)
+    enabled: !!id, 
+  });
+};
+
+// 👉 2. Hook to send a reply
+export const useReplyToTicket = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (data: { id: string; message: string }) => {
+      // Assuming your backend expects { ticketId, message } in the body for the /reply endpoint.
+      // Adjust the keys if your backend expects something else (like just { id, message }).
+      const response = await api.post(`/support/ticket/reply`, {
+        ticketId: data.id,
+        message: data.message,
+      });
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      // Invalidate both the specific ticket thread AND the main tickets list 
+      // so everything updates immediately without needing a page refresh
+      queryClient.invalidateQueries({ queryKey: ["ticket", variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["tickets"] });
+    },
+  });
+};

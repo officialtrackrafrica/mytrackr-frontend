@@ -97,7 +97,7 @@ const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
       {/* 1. Date Range Section */}
       <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-slate-700 text-sm font-semibold">
-          <Calendar size="18" className="text-slate-400" />
+          <Calendar size="18" className="text-slate-400" color='#90a1b9'/>
           <span>Select Range:</span>
         </div>
         
@@ -121,7 +121,7 @@ const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
       {/* 2. Critical Runway Alert Banner */}
       {data?.lowRunwayAlert && (
         <div className="mb-6 bg-red-50 border border-red-200 text-red-900 rounded-xl p-4 flex items-center gap-3 text-sm animate-in fade-in slide-in-from-top-2">
-          <Warning2 size="20" className="text-red-600 shrink-0" variant="Bold" />
+          <Warning2 size="20" className="text-red-600 shrink-0" variant="Bold" color='#82181a' />
           <div>
             <span className="font-bold">Low Runway Warning:</span> Your business has less than 3 months of operational runway left based on your current burn rate. Consider optimizing expenses.
           </div>

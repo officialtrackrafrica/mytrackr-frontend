@@ -109,7 +109,7 @@ export const CreateTicketDrawer = ({ isOpen, onClose }: Props) => {
                   accept=".svg,.png,.jpg,.jpeg,.gif" 
                 />
                 <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center mb-3 group-hover:bg-white transition-colors">
-                  <DocumentUpload size="20" className="text-slate-500" />
+                  <DocumentUpload size="20" color="#62748E" className="text-slate-500" />
                 </div>
                 <p className="text-sm text-slate-600 mb-1">
                   <span className="font-bold text-brand-blue">Click to upload</span> or drag and drop

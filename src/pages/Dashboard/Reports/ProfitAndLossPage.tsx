@@ -63,7 +63,7 @@ const handleGenerateReport = (format: 'pdf' | 'csv') => {
       {/* 1. Date Range Filter controls */}
       <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-slate-700 text-sm font-semibold">
-          <Calendar size="18" className="text-slate-400" />
+          <Calendar size="18" className="text-slate-400" color='#90a1b9' />
           <span>Report Period:</span>
         </div>
         
@@ -185,7 +185,7 @@ const handleGenerateReport = (format: 'pdf' | 'csv') => {
               <div className="space-y-0.5">
                 {data?.expenses?.other?.lines.map((line, idx) => (
                   <div key={idx} className="flex justify-between items-center px-6 py-3 text-sm text-slate-600 hover:bg-slate-50/40 rounded-lg">
-                    <span>{line.label}</span>
+                    <span>{line.subCategory}</span>
                     <span className="font-medium text-slate-900">{formatCurrency(line.amount)}</span>
                   </div>
                 ))}
