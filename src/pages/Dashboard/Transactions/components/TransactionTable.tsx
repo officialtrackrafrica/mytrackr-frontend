@@ -230,7 +230,7 @@ export const TransactionsTable = ({
 
   return (
     <div className="w-full">
-     <div className="flex justify-end mb-4 px-4 md:px-0">
+     {/* <div className="flex justify-end mb-4 px-4 md:px-0">
         <Button
           onClick={() => runAiSync()}
           isLoading={isSyncingAi} // Shows a spinner while the AI is thinking
@@ -239,6 +239,19 @@ export const TransactionsTable = ({
           <Magicpen size="16" variant="Bold" color='white'/>
           {isSyncingAi ? 'Running Prediction...' : 'Auto-categorise all with AI'}
         </Button>
+      </div> */}
+      <div className="flex flex-col items-end mb-4 px-4 md:px-0">
+        <Button
+          onClick={() => runAiSync()}
+          isLoading={isSyncingAi} // Shows a spinner while the AI is thinking
+          className="text-white text-xs font-semibold py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition-all w-fit"
+        >
+          <Magicpen size="16" variant="Bold" color='white'/>
+          {isSyncingAi ? 'Running Prediction...' : 'Auto-categorise all with AI'}
+        </Button>
+        <span className="text-[10px] text-slate-400 italic mt-1.5">
+          * AI suggestions may occasionally be inaccurate. Please review categorisations.
+        </span>
       </div>
       <div className="hidden md:block">
         <Table
