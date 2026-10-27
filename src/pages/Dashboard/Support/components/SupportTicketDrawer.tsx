@@ -1,6 +1,6 @@
 // src/pages/dashboard/components/support/SupportTicketDrawer.tsx
 import { useRef, useState } from 'react';
-import { Paperclip2, EmojiNormal, Send2, RecordCircle } from 'iconsax-react';
+import { Paperclip2, Send2, RecordCircle } from 'iconsax-react';
 import { useTicketDetails, useReplyToTicket } from '../api/useSupport'; // Ensure these hooks exist
 import { formatDate } from '../../../../utils/helpers';
 import { toast } from 'sonner';
