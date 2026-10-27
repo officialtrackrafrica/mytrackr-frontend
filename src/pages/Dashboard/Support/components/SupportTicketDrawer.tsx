@@ -1,5 +1,5 @@
 // src/pages/dashboard/components/support/SupportTicketDrawer.tsx
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Paperclip2, EmojiNormal, Send2, RecordCircle } from 'iconsax-react';
 import { useTicketDetails, useReplyToTicket } from '../api/useSupport'; // Ensure these hooks exist
 import { formatDate } from '../../../../utils/helpers';
@@ -14,13 +14,15 @@ interface SupportTicketDrawerProps {
 
 export const SupportTicketDrawer = ({ isOpen, onClose, ticket }: SupportTicketDrawerProps) => {
   const [replyMessage, setReplyMessage] = useState("");
-
+// 👉 1. Add state and ref for the attachment
+  const [attachment, setAttachment] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   // Fetch full thread data
   const { data, isLoading } = useTicketDetails(ticket?.id);
   const { mutate: sendReply, isPending: isSending } = useReplyToTicket();
 
   const fullTicket = data?.data || data?.ticket || ticket;
-  const isOngoing = fullTicket?.status?.toLowerCase() === 'ongoing' || fullTicket?.status?.toLowerCase() === 'open';
+  const isOngoing = fullTicket?.status?.toLowerCase() === 'in_progress' || fullTicket?.status?.toLowerCase() === 'open';
 
   // Merge the initial ticket description into the replies array as the first message
   const rawMessages = data?.messages || data?.replies || [];
@@ -38,9 +40,11 @@ export const SupportTicketDrawer = ({ isOpen, onClose, ticket }: SupportTicketDr
   const handleSendReply = () => {
     if (!replyMessage.trim() || !fullTicket?.id) return;
     
-    sendReply({ id: fullTicket.id, message: replyMessage }, {
+    sendReply({ id: fullTicket.id, message: replyMessage, attachment }, {
       onSuccess: () => {
         setReplyMessage("");
+        setAttachment(null); // Clear file on success
+        if (fileInputRef.current) fileInputRef.current.value = "";
         toast.success("Reply sent successfully.");
       },
       onError: () => toast.error("Failed to send reply.")
@@ -134,13 +138,40 @@ export const SupportTicketDrawer = ({ isOpen, onClose, ticket }: SupportTicketDr
         {/* Reply Input Footer */}
         {isOngoing && (
           <div className="p-4 bg-white border-t border-slate-200 shrink-0">
+            {/* 👉 3. Show a preview bubble if a file is selected */}
+            {attachment && (
+              <div className="absolute bottom-full mb-2 left-4 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 flex items-center gap-2 shadow-sm animate-in fade-in slide-in-from-bottom-2">
+                <span className="truncate max-w-[150px]">{attachment.name}</span>
+                <button 
+                  onClick={() => {
+                    setAttachment(null);
+                    if (fileInputRef.current) fileInputRef.current.value = "";
+                  }} 
+                  className="text-slate-400 hover:text-red-500 transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
             <div className="flex items-center gap-3 bg-white border border-slate-200 rounded-lg p-2 focus-within:border-brand-blue focus-within:ring-1 focus-within:ring-brand-blue transition-all">
-              <button className="p-1.5 text-slate-400 hover:text-slate-600 transition-colors">
+              <input 
+                type="file" 
+                ref={fileInputRef}
+                className="hidden" 
+                onChange={(e) => setAttachment(e.target.files?.[0] || null)}
+              />
+              <button 
+                onClick={() => fileInputRef.current?.click()}
+                className={`p-1.5 transition-colors ${attachment ? 'text-brand-blue' : 'text-slate-400 hover:text-slate-600'}`}
+              >
+                <Paperclip2 size="18" color='#135ed6'/>
+              </button>
+              {/* <button className="p-1.5 text-slate-400 hover:text-slate-600 transition-colors">
                 <Paperclip2 size="18" color='#90a1b9'/>
               </button>
               <button className="p-1.5 text-slate-400 hover:text-slate-600 transition-colors">
                 <EmojiNormal size="18" color='#90a1b9'/>
-              </button>
+              </button> */}
               
               <input 
                 type="text"

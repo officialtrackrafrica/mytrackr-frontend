@@ -1,5 +1,5 @@
 // src/hooks/useBalanceSheet.ts
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '../../../../utils/api';
 
 interface BSParams {
@@ -61,3 +61,26 @@ export interface BalanceSheetResponse {
       staleTime: 1000 * 60 * 5,
     });
   };
+
+  export const useExportBalanceSheet = () => {
+  return useMutation({
+    mutationFn: async (params: { startDate: string; endDate: string }) => {
+      const response = await api.get('/reports/balance-sheet/export.pdf', {
+        params,
+        responseType: 'blob', 
+      });
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      // Create an invisible anchor tag to trigger the browser's download prompt
+      const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Balance_Sheet_${variables.startDate}_to_${variables.endDate}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url); // Clean up memory
+    }
+  });
+};

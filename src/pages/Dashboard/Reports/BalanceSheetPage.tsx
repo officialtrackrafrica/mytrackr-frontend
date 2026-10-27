@@ -1,9 +1,11 @@
 // src/pages/dashboard/BalanceSheetPage.tsx
 import { useState } from 'react';
 import { DashboardLayout } from '../../../components/layout/DashboardLayout';
-import { Calendar, InfoCircle, Danger } from 'iconsax-react';
-import { useBalanceSheet } from './api/useBalanceSheet'; // Adjust path as needed
+import { Calendar, InfoCircle, Danger, DocumentDownload } from 'iconsax-react';
+import { useBalanceSheet, useExportBalanceSheet } from './api/useBalanceSheet'; // Adjust path as needed
 import { formatCurrency } from '../../../utils/helpers';
+import { toast } from 'sonner';
+import { Button } from '../../../components/ui/Button';
 
 export const BalanceSheetPage = () => {
   const [dates, setDates] = useState({
@@ -12,6 +14,15 @@ export const BalanceSheetPage = () => {
   });
 
   const { data, isLoading, isError, error } = useBalanceSheet(dates);
+  // 👉 Initialize the export mutation
+  const { mutate: exportPdf, isPending: isExporting } = useExportBalanceSheet();
+
+  const handleExport = () => {
+    exportPdf(dates, {
+      onSuccess: () => toast.success("Balance sheet exported successfully!"),
+      onError: () => toast.error("Failed to export balance sheet.")
+    });
+  };
   return (
     <DashboardLayout
       title="Balance Sheet"
@@ -19,6 +30,7 @@ export const BalanceSheetPage = () => {
     >
       {/* 1. Date Range Section */}
       <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="flex items-center gap-2 text-slate-700 text-sm font-semibold">
           <Calendar size="18" className="text-slate-400" color='#90a1b9'/>
           <span>Date range:</span>
@@ -39,6 +51,16 @@ export const BalanceSheetPage = () => {
             className="w-full sm:w-auto px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-700 outline-none focus:ring-1 focus:ring-brand-blue shadow-sm cursor-pointer"
           />
         </div>
+      </div>
+      <Button 
+          onClick={handleExport}
+          disabled={isExporting || isLoading || isError}
+          className="w-full sm:w-auto bg-brand-blue hover:bg-[#135ED6] text-white px-4 py-2 flex items-center justify-center gap-2 rounded-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          <DocumentDownload size="18" color="currentColor" />
+          {isExporting ? "Exporting..." : "Export PDF"}
+        </Button>
+
       </div>
 
       {/* 2. Accounting Integrity Check Warning Strip */}
