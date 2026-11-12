@@ -2,8 +2,11 @@
 import { ArrowLeft, TickCircle } from 'iconsax-react';
 import { Button } from '../../../../components/ui/Button';
 import { toast } from 'sonner';
+import { isAxiosError } from 'axios';
 import { useAvailablePlans, useUpgradePlan } from '../api/useBilling';
 import { useState } from 'react';
+import { SelectBankModal, type BankSelection } from '../../../../components/SelectBankModal';
+import { planRequiresBank } from '../../../../utils/plans';
 // import { plans } from '../../../../utils/plans';
 
 interface UpgradePlanViewProps {
@@ -16,12 +19,24 @@ export const UpgradePlanView = ({ onBack, currentPlanId }: UpgradePlanViewProps)
   const { mutate: upgradePlan, isPending } = useUpgradePlan();
   const [loadingPlanSlug, setLoadingPlanSlug] = useState<string | null>(null);
 
-const handleUpgrade = (planSlug: string) => {
-  setLoadingPlanSlug(planSlug);
+  // Plan waiting on a bank selection before we can start checkout
+  const [pendingPlanSlug, setPendingPlanSlug] = useState<string | null>(null);
+
+  const handleUpgrade = (planSlug: string) => {
+    if (planRequiresBank(planSlug)) {
+      setPendingPlanSlug(planSlug);
+    } else {
+      startUpgrade(planSlug);
+    }
+  };
+
+  const startUpgrade = (planSlug: string, bank?: BankSelection) => {
+    setLoadingPlanSlug(planSlug);
     upgradePlan(
       { 
         planSlug: planSlug, 
-        interval: 'monthly' // You can make this dynamic later if you add a Monthly/Yearly toggle!
+        interval: 'monthly', // You can make this dynamic later if you add a Monthly/Yearly toggle!
+        ...bank,
       }, 
       {
         onSuccess: (response) => {
@@ -33,11 +48,13 @@ const handleUpgrade = (planSlug: string) => {
           } else {
             // Fallback just in case it was a free plan or didn't need checkout
             toast.success("Successfully updated your subscription plan!");
+            setPendingPlanSlug(null);
             onBack(); 
           }
         },
-        onError: () => {
-          toast.error("Failed to upgrade plan. Please try again.");
+        onError: (error) => {
+          const message = isAxiosError(error) ? error.response?.data?.message : undefined;
+          toast.error(message || "Failed to upgrade plan. Please try again.");
         }
       }
     );
@@ -126,6 +143,15 @@ const isThisButtonLoading = isPending && loadingPlanSlug === plan.slug;
           })
         }
       </div>
+
+      {pendingPlanSlug && (
+        <SelectBankModal
+          planName={plans?.find((plan: { slug: string }) => plan.slug === pendingPlanSlug)?.name}
+          isSubmitting={isPending}
+          onClose={() => setPendingPlanSlug(null)}
+          onConfirm={(bank) => startUpgrade(pendingPlanSlug, bank)}
+        />
+      )}
     </div>
   );
 };

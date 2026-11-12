@@ -31,7 +31,7 @@ export const Dialog = ({ isOpen, onClose, title, description, icon, children }: 
           <div className="flex justify-between items-start mb-2">
             <h2 className="text-xl font-bold text-slate-900">{title}</h2>
             <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
-              <CloseCircle size="24" />
+              <CloseCircle size="24" color="currentColor" />
             </button>
           </div>
           {description && <p className="text-sm text-slate-500 mb-6">{description}</p>}

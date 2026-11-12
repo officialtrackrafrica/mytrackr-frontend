@@ -1,19 +1,26 @@
 // src/pages/auth/SubscriptionPage.tsx
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { isAxiosError } from 'axios';
 import { useUpgradePlan } from '../../../pages/Dashboard/Settings/api/useBilling';
 import { AuthLayout } from '../../../components/layout/AuthLayout';
 import { SubscriptionStep } from './SubscriptionStep';
 import { ArrowLeft } from 'iconsax-react';
+import { SelectBankModal, type BankSelection } from '../../../components/SelectBankModal';
+import { planRequiresBank, plans } from '../../../utils/plans';
 
 
 export const SubscriptionPage = () => {
   const navigate = useNavigate();
   const { mutate: subscribe, isPending: isSubscribing } = useUpgradePlan();
 
-  const handlePlanSelection = (planSlug: string) => {
+  // Plan waiting on a bank selection before we can start checkout
+  const [pendingPlanSlug, setPendingPlanSlug] = useState<string | null>(null);
+
+  const startSubscription = (planSlug: string, bank?: BankSelection) => {
     subscribe(
-      { planSlug, interval: 'monthly' }, 
+      { planSlug, interval: 'monthly', ...bank }, 
       {
         onSuccess: (response) => {
           if (response?.authorizationUrl) {
@@ -25,11 +32,20 @@ export const SubscriptionPage = () => {
             navigate('/dashboard'); 
           }
         },
-        onError: () => {
-          toast.error("Failed to initiate subscription. Please try again.");
+        onError: (error) => {
+          const message = isAxiosError(error) ? error.response?.data?.message : undefined;
+          toast.error(message || "Failed to initiate subscription. Please try again.");
         }
       }
     );
+  };
+
+  const handlePlanSelection = (planSlug: string) => {
+    if (planRequiresBank(planSlug)) {
+      setPendingPlanSlug(planSlug);
+    } else {
+      startSubscription(planSlug);
+    }
   };
 
   return (
@@ -47,6 +63,15 @@ export const SubscriptionPage = () => {
           isProcessing={isSubscribing} 
         />
       </div>
+
+      {pendingPlanSlug && (
+        <SelectBankModal
+          planName={plans.find((plan) => plan.slug === pendingPlanSlug)?.name}
+          isSubmitting={isSubscribing}
+          onClose={() => setPendingPlanSlug(null)}
+          onConfirm={(bank) => startSubscription(pendingPlanSlug, bank)}
+        />
+      )}
     </AuthLayout>
   );
 };

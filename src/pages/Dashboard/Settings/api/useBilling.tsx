@@ -41,6 +41,9 @@ export const useAvailablePlans = () => {
 export interface SubscribePayload {
   planSlug: string;
   interval: 'monthly' | 'yearly' | string;
+  // From GET /mono/institutions. Sent for plans that include live bank sync.
+  institutionId?: string;
+  accountType?: string;
 }
 
 export const useUpgradePlan = () => {
@@ -48,7 +51,7 @@ export const useUpgradePlan = () => {
 
   return useMutation({
     mutationFn: async (payload: SubscribePayload) => {
-      // Sends exactly { planSlug: "...", interval: "..." } to your backend
+      // Sends { planSlug, interval } plus { institutionId, accountType } when a bank was selected
       const { data } = await api.post('/subscriptions/subscribe', payload); 
       return data;
     },

@@ -33,6 +33,13 @@ export const PLAN_LIMITS: Record<PlanSlug, {
   },
 };
 
+// Plans with live bank sync need a supported bank + account type chosen before checkout.
+// Unknown slugs are treated as bank plans so the backend coverage check always gets its fields.
+export const planRequiresBank = (slug: string) => {
+  const limits = PLAN_LIMITS[slug as PlanSlug];
+  return limits ? limits.maxBankAccounts > 0 : true;
+};
+
 export const plans = [
     {
       slug: 'starter',
