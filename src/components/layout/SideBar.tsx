@@ -35,7 +35,7 @@ const secondaryItems = [
   { 
     name: 'API Integrations', 
     icon: Code, 
-    path: 'https://mytrackr.myco.com.ng/developers/integrations',
+    path: 'https://developer.mytrackrservices.com/developers/guides',
     isExternal: true 
   },
 ];

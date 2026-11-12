@@ -131,7 +131,7 @@ const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
           <li>Generate your ready financial reports.</li>
         </ol>
         <p className="text-xs text-slate-500 mt-3">
-          Still confused? <span className="text-brand-blue font-bold cursor-pointer underline">Click HERE</span> to watch a demonstration video.
+          Still confused? <span className="text-brand-blue font-bold cursor-pointer underline"><a href="https://www.instagram.com/p/DffTyMxDZYM/?mdxt=MXFxOWs2ZTRqNjdkbw==">Click HERE</a></span> to watch a demonstration video.
         </p>
       </div>
 
