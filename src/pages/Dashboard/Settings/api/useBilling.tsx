@@ -44,6 +44,7 @@ export interface SubscribePayload {
   // From GET /mono/institutions. Sent for plans that include live bank sync.
   institutionId?: string;
   accountType?: string;
+  autoRenew?: boolean;
 }
 
 export const useUpgradePlan = () => {
